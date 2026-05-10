@@ -193,16 +193,76 @@ async function init() {
     if (e.key === 'Escape') hidePreview();
   });
 
-  if (hasWebGL()) {
-    try {
-      await loadScript('https://cdn.jsdelivr.net/npm/globe.gl@2/dist/globe.gl.min.js');
-      mountGlobe(data);
-      return;
-    } catch (e) {
-      console.warn('globe.gl load failed, falling back to 2D', e);
+  // Defer the heavy globe load until the stage is in view AND the
+  // browser is idle. This keeps the atlas page's LCP/TBT honest — the
+  // list, filters, search, and 2D preview are all immediately usable.
+  scheduleGlobeMount(data);
+}
+
+function renderStagePlaceholder() {
+  if (!stage || stage.dataset.placeholder === 'true') return;
+  stage.dataset.placeholder = 'true';
+  stage.innerHTML =
+    '<div class="globe-placeholder" aria-hidden="true">' +
+    '<div class="globe-placeholder-orb"></div>' +
+    '<div class="globe-placeholder-label">Globe loading on scroll…</div>' +
+    '</div>';
+}
+
+function clearStagePlaceholder() {
+  if (!stage) return;
+  stage.dataset.placeholder = 'false';
+  stage.innerHTML = '';
+}
+
+function scheduleGlobeMount(data) {
+  if (!stage) return;
+  renderStagePlaceholder();
+
+  const supportsWebGL = hasWebGL();
+  let started = false;
+
+  const start = () => {
+    if (started) return;
+    started = true;
+    const finish = async () => {
+      if (supportsWebGL) {
+        try {
+          await loadScript('https://cdn.jsdelivr.net/npm/globe.gl@2/dist/globe.gl.min.js');
+          clearStagePlaceholder();
+          mountGlobe(data);
+          return;
+        } catch (e) {
+          console.warn('globe.gl load failed, falling back to 2D', e);
+        }
+      }
+      clearStagePlaceholder();
+      mount2D(data);
+    };
+    if ('requestIdleCallback' in window) {
+      window.requestIdleCallback(finish, { timeout: 1500 });
+    } else {
+      setTimeout(finish, 200);
     }
+  };
+
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) {
+            io.disconnect();
+            start();
+            break;
+          }
+        }
+      },
+      { rootMargin: '120px' },
+    );
+    io.observe(stage);
+  } else {
+    start();
   }
-  mount2D(data);
 }
 
 const renderGlobe = {};
