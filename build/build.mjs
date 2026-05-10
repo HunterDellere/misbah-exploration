@@ -4,6 +4,7 @@
  */
 
 import { readFileSync, writeFileSync, mkdirSync, readdirSync, statSync, existsSync } from 'fs';
+import { createHash } from 'crypto';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import matter from 'gray-matter';
@@ -288,6 +289,17 @@ function emitData(topics, pillars) {
   writeFileSync(join(ROOT, 'data/search.json'), JSON.stringify(buildSearchIndex(topics, pillars), null, 2));
 }
 
+function emitBuildInfo(topics, pillars) {
+  const seed = JSON.stringify({
+    topics: topics.map((t) => [t.slug, t.updated, t.status, t.words]).sort(),
+    pillars: pillars.map((p) => [p.slug, p.updated]).sort(),
+  });
+  const hash = createHash('sha1').update(seed).digest('hex').slice(0, 10);
+  const info = { hash, builtAt: new Date().toISOString() };
+  writeFileSync(join(ROOT, 'data/build-info.json'), JSON.stringify(info, null, 2));
+  return info;
+}
+
 function emitSitemap(topics, pillars) {
   const urls = [
     SITE_URL + '/',
@@ -384,4 +396,5 @@ emitData(topics, pillars);
 emitSitemap(topics, pillars);
 emitFeed(topics);
 emitRobots();
-console.log(`[build] ${topics.length} topics + ${pillars.length} pillars → pages/, data/, sitemap.xml, feed.xml`);
+const buildInfo = emitBuildInfo(topics, pillars);
+console.log(`[build] ${topics.length} topics + ${pillars.length} pillars → pages/, data/, sitemap.xml, feed.xml (build ${buildInfo.hash})`);
