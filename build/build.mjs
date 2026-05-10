@@ -11,6 +11,8 @@ import { escapeAttr, fillTemplate } from './lib/util.mjs';
 import { renderTopicPage, renderHomeMosaic, renderPillarPage, familyFor } from './lib/render.mjs';
 import { renderAtlasPage } from './lib/atlas.mjs';
 import { ensurePlaceholder, ensurePillarPlaceholder } from './lib/placeholder.mjs';
+import { writeOgImage } from './lib/og-image.mjs';
+import { ensureResponsiveVariants, variantsFor } from './lib/responsive.mjs';
 import { renderTagsPage, renderTimelinePage, buildSearchIndex } from './lib/indexes.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -32,12 +34,19 @@ function walk(dir) {
   return out;
 }
 
+function countWords(s) {
+  return (s.match(/\S+/g) || []).length;
+}
+
 function loadMd(dir) {
   return walk(join(ROOT, dir)).map(file => {
     const raw = readFileSync(file, 'utf8');
     const { data, content } = matter(raw);
     const slug = data.slug || file.split('/').pop().replace(/\.md$/, '');
-    return { ...data, slug, body: content.trim() };
+    const body = content.trim();
+    const words = countWords(body);
+    const readingMinutes = Math.max(1, Math.round(words / 220));
+    return { ...data, slug, body, words, readingMinutes };
   });
 }
 
@@ -111,7 +120,10 @@ function buildTopicPages(topics) {
     const fam = familyFor(topic);
     const url = `${SITE_URL}/pages/topics/${topic.slug}.html`;
     const hero = (topic.images || []).find(i => i.role === 'hero') || (topic.images || [])[0];
-    const ogImage = hero ? `${SITE_URL}/assets/images/topics/${topic.slug}/${hero.src}` : undefined;
+    writeOgImage(ROOT, topic.slug, fam.key, topic.title, topic.summary || '');
+    const ogImage = hero
+      ? `${SITE_URL}/assets/images/topics/${topic.slug}/${hero.src}`
+      : `${SITE_URL}/og/${topic.slug}.svg`;
     writePage(join(ROOT, 'pages/topics', `${topic.slug}.html`), {
       metaComment: `built ${new Date().toISOString()} · ${fam.label}`,
       pageTitle: topic.title,
@@ -206,17 +218,38 @@ function build404() {
 
 function jsonLdForTopic(topic, url) {
   if (topic.status !== 'complete') return '';
-  const data = {
+  const hero = (topic.images || []).find((i) => i.role === 'hero') || (topic.images || [])[0];
+  const image = hero ? `${SITE_URL}/assets/images/topics/${topic.slug}/${hero.src}` : undefined;
+  const article = {
     '@context': 'https://schema.org',
     '@type': 'Article',
     headline: topic.title,
     description: topic.summary || '',
     url,
+    mainEntityOfPage: url,
     datePublished: topic.updated,
-    author: { '@type': 'Person', name: 'Hunter Dellere' },
+    dateModified: topic.updated,
+    author: { '@type': 'Person', name: 'Hunter Dellere', url: SITE_URL },
+    publisher: { '@type': 'Organization', name: SITE_NAME, url: SITE_URL },
     keywords: (topic.tags || []).join(', '),
+    ...(image ? { image } : {}),
   };
-  return `<script type="application/ld+json">${JSON.stringify(data)}</script>`;
+  const blocks = [article];
+  if (topic.geo?.lat != null && topic.geo?.lng != null) {
+    blocks.push({
+      '@context': 'https://schema.org',
+      '@type': 'Place',
+      name: topic.geo.place || topic.title,
+      geo: {
+        '@type': 'GeoCoordinates',
+        latitude: topic.geo.lat,
+        longitude: topic.geo.lng,
+      },
+    });
+  }
+  return blocks
+    .map((b) => `<script type="application/ld+json">${JSON.stringify(b)}</script>`)
+    .join('\n');
 }
 
 function emitData(topics, pillars) {
@@ -226,6 +259,7 @@ function emitData(topics, pillars) {
       slug: t.slug, title: t.title, summary: t.summary,
       tags: t.tags || [], updated: t.updated, status: t.status,
       geo: t.geo, family: familyFor(t).key, pillar: t.pillar,
+      words: t.words, readingMinutes: t.readingMinutes,
     })),
     null, 2
   ));
@@ -332,6 +366,12 @@ const topics = loadMd('content/topics');
 const pillars = loadMd('content/pillars');
 
 if (topics.length === 0) console.warn('[build] No topics found');
+
+// Generate responsive variants for any raster heroes (no-op if sharp missing).
+for (const t of topics) {
+  await ensureResponsiveVariants(ROOT, t.slug);
+  t.heroVariants = variantsFor(ROOT, t.slug);
+}
 
 ensureAssets(topics, pillars);
 buildHome(topics, pillars);

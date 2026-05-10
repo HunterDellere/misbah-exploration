@@ -129,10 +129,11 @@ export function renderTopicPage(topic, all) {
   if (topic.geo?.place) meta.push(`<span class="pin">◉ ${escapeHtml(topic.geo.place)}</span>`);
   if (topic.era) meta.push(escapeHtml(formatEra(topic.era)));
   meta.push(escapeHtml(fam.label));
+  if (topic.readingMinutes) meta.push(`<span class="reading-time">${topic.readingMinutes} min read</span>`);
 
   const heroBlock = `
     <header class="topic-hero ${heroVariant}" data-family="${fam.color}">
-      ${heroSrc ? `<img class="topic-hero-img" src="${escapeAttr(heroSrc)}" alt="${escapeAttr(hero.alt || topic.title)}" loading="eager" decoding="async">` : ''}
+      ${heroSrc ? renderHeroImg(topic, hero, heroSrc) : ''}
       <div class="topic-hero-overlay">
         <div class="topic-hero-overlay-inner">
           <div class="topic-hero-meta">${meta.join('<span aria-hidden="true">·</span>')}</div>
@@ -220,6 +221,22 @@ function renderFigure(slug, img) {
 function imagePath(slug, src) {
   if (/^https?:/i.test(src)) return src;
   return `../../assets/images/topics/${slug}/${src}`;
+}
+
+function renderHeroImg(topic, hero, heroSrc) {
+  const variants = topic.heroVariants || [];
+  const alt = escapeAttr(hero.alt || topic.title);
+  if (variants.length === 0) {
+    return `<img class="topic-hero-img" src="${escapeAttr(heroSrc)}" alt="${alt}" loading="eager" decoding="async">`;
+  }
+  const srcset = variants
+    .map((v) => `../../assets/images/topics/${topic.slug}/${v.file} ${v.width}w`)
+    .join(', ');
+  const fallback = variants[variants.length - 1].file;
+  return `<picture>
+        <source type="image/webp" srcset="${escapeAttr(srcset)}" sizes="(min-width: 1200px) 1200px, 100vw">
+        <img class="topic-hero-img" src="../../assets/images/topics/${escapeAttr(topic.slug)}/${escapeAttr(fallback)}" alt="${alt}" loading="eager" decoding="async">
+      </picture>`;
 }
 
 function formatEra(era) {
