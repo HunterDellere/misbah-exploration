@@ -1,0 +1,44 @@
+name: content-backup
+
+on:
+  schedule:
+    # First of every month at 06:00 UTC
+    - cron: '0 6 1 * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build tarball
+        id: pack
+        run: |
+          set -euo pipefail
+          STAMP="$(date -u +%Y-%m-%d)"
+          TARBALL="misbah-content-${STAMP}.tar.gz"
+          tar -czf "${TARBALL}" content assets/images/topics
+          SHA="$(shasum -a 256 "${TARBALL}" | awk '{print $1}')"
+          SIZE="$(du -h "${TARBALL}" | awk '{print $1}')"
+          echo "stamp=${STAMP}" >> "$GITHUB_OUTPUT"
+          echo "tarball=${TARBALL}" >> "$GITHUB_OUTPUT"
+          echo "sha256=${SHA}" >> "$GITHUB_OUTPUT"
+          echo "size=${SIZE}" >> "$GITHUB_OUTPUT"
+
+      - name: Create release with tarball
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: backup-${{ steps.pack.outputs.stamp }}
+          name: Content backup ${{ steps.pack.outputs.stamp }}
+          body: |
+            Monthly snapshot of `content/` and `assets/images/topics/`.
+
+            - File: `${{ steps.pack.outputs.tarball }}`
+            - Size: ${{ steps.pack.outputs.size }}
+            - SHA-256: `${{ steps.pack.outputs.sha256 }}`
+          files: ${{ steps.pack.outputs.tarball }}
+          make_latest: false
