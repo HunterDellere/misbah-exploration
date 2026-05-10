@@ -13,12 +13,15 @@ const TOPIC_FAMILIES = {
   craft: { label: 'Craft',      color: 'craft' },
   experience: { label: 'Experience', color: 'experience' },
   food: { label: 'Food',        color: 'food' },
+  vietnam: { label: 'Vietnam',  color: 'vietnam' },
+  geography: { label: 'Geography', color: 'science' },
 };
 
 const PILLAR_LABELS = {
   anthropology: 'Anthropology',
   tea: 'Tea',
   cartography: 'Cartography',
+  vietnam: 'Vietnam',
 };
 
 export function familyFor(topic) {

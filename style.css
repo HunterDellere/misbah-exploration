@@ -34,6 +34,7 @@
   --topic-craft:      #5a3a6a;
   --topic-experience: #8a5a3a;
   --topic-food:       #b8623a;
+  --topic-vietnam:    #8a3a3a;
   --topic-default:    #2c3949;
 
   --topic-tea-bg:        rgba(61, 110, 110, 0.07);
@@ -44,6 +45,7 @@
   --topic-craft-bg:      rgba(90, 58, 106, 0.07);
   --topic-experience-bg: rgba(138, 90, 58, 0.07);
   --topic-food-bg:       rgba(184, 98, 58, 0.07);
+  --topic-vietnam-bg:    rgba(138, 58, 58, 0.08);
 
   /* Type */
   --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
@@ -949,6 +951,7 @@ main { display: block; }
 .pillar-card--anthro { --card-tint: var(--topic-anthro-bg); }
 .pillar-card--tea { --card-tint: var(--topic-tea-bg); }
 .pillar-card--science { --card-tint: var(--topic-science-bg); }
+.pillar-card--vietnam { --card-tint: var(--topic-vietnam-bg); }
 .pillar-card:hover {
   transform: translateY(-3px);
   box-shadow: var(--shadow-md);
@@ -1582,6 +1585,7 @@ main { display: block; }
 .timeline-item[data-family="travel"] { border-left-color: var(--topic-travel); }
 .timeline-item[data-family="history"] { border-left-color: var(--topic-history); }
 .timeline-item[data-family="food"] { border-left-color: var(--topic-food); }
+.timeline-item[data-family="vietnam"] { border-left-color: var(--topic-vietnam); }
 .timeline-item:hover {
   z-index: 5;
   background: var(--paper);

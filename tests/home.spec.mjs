@@ -12,7 +12,7 @@ test('home renders mosaic with all topics', async ({ page }) => {
 
 test('home: pillar strip renders', async ({ page }) => {
   await page.goto('/');
-  await expect(page.locator('.pillar-card')).toHaveCount(3);
+  await expect(page.locator('.pillar-card')).toHaveCount(4);
   await expect(page.locator('.pillar-card-title').first()).not.toBeEmpty();
 });
 

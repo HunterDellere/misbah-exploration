@@ -13,6 +13,9 @@ const PALETTES = {
   food:         { a: '#b8623a', b: '#5a2e1a', c: '#c9a44a' },
   experience:   { a: '#8a5a3a', b: '#3a2818', c: '#c9a44a' },
   science:      { a: '#2c4a6e', b: '#0e1f38', c: '#c9a44a' },
+  cartography:  { a: '#2c4a6e', b: '#0e1f38', c: '#c9a44a' },
+  vietnam:      { a: '#8a3a3a', b: '#3a1414', c: '#c9a44a' },
+  geography:    { a: '#2c4a6e', b: '#0e1f38', c: '#c9a44a' },
   default:      { a: '#2c3949', b: '#0e1726', c: '#c9a44a' },
 };
 

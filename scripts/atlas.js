@@ -6,7 +6,8 @@
 const PIN_COLORS = {
   tea: '#3d6e6e', history: '#7a4a1a', travel: '#c9a44a',
   anthropology: '#7a2e2a', science: '#2c4a6e', craft: '#5a3a6a',
-  experience: '#8a5a3a', food: '#b8623a', default: '#2c3949',
+  experience: '#8a5a3a', food: '#b8623a', vietnam: '#8a3a3a',
+  geography: '#2c4a6e', default: '#2c3949',
 };
 
 const stage = document.getElementById('globe');

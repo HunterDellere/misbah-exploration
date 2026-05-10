@@ -49,6 +49,14 @@ test('feed.xml is valid RSS', async ({ page }) => {
 test('search.json contains all topics + pillars', async ({ page }) => {
   const r = await page.goto('/data/search.json');
   const data = await r.json();
-  expect(data.length).toBeGreaterThanOrEqual(19 + 3);
+  expect(data.length).toBeGreaterThanOrEqual(26 + 4);
   expect(data.some(d => d.kind === 'pillar')).toBe(true);
+});
+
+test('vietnam pillar: lists 7 essays in order', async ({ page }) => {
+  await page.goto('/pages/pillars/vietnam.html');
+  await expect(page.locator('.pillar-hero-title')).toContainText(/Vietnam/);
+  await expect(page.locator('.pillar-child')).toHaveCount(7);
+  const firstHref = await page.locator('.pillar-child').first().getAttribute('href');
+  expect(firstHref).toMatch(/vietnam-the-shape-of-the-country/);
 });
