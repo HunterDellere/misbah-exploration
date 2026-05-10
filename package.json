@@ -12,9 +12,16 @@
     "watch": "node build/watch.mjs",
     "draft": "node build/draft.mjs",
     "serve": "python3 -m http.server 8080",
+    "report": "node build/report.mjs",
+    "lint": "npm run lint:js",
+    "lint:js": "eslint .",
+    "lint:css": "stylelint \"**/*.css\" --ignore-path .prettierignore",
+    "lint:format": "prettier --check .",
+    "format": "prettier --write .",
     "test": "npm run verify && playwright test",
     "test:ui": "playwright test --ui",
-    "test:live": "playwright test --config=playwright.live.config.mjs"
+    "test:live": "playwright test --config=playwright.live.config.mjs",
+    "prepare": "husky || true"
   },
   "dependencies": {
     "gray-matter": "^4.0.3",
@@ -22,6 +29,14 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.10.0",
-    "@playwright/test": "^1.48.0"
+    "@eslint/js": "^9.0.0",
+    "@playwright/test": "^1.48.0",
+    "eslint": "^9.0.0",
+    "globals": "^15.0.0",
+    "husky": "^9.0.0",
+    "prettier": "^3.3.0",
+    "sharp": "^0.33.0",
+    "stylelint": "^16.0.0",
+    "stylelint-config-standard": "^36.0.0"
   }
 }

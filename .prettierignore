@@ -1,0 +1,16 @@
+node_modules/
+pages/
+data/
+og/
+_site/
+test-results/
+playwright-report/
+package-lock.json
+sitemap.xml
+feed.xml
+404.html
+index.html
+random.html
+assets/images/
+content/
+local/
