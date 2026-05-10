@@ -7,7 +7,7 @@ import { readFileSync, writeFileSync, mkdirSync, readdirSync, statSync, existsSy
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import matter from 'gray-matter';
-import { escapeHtml, escapeAttr, fillTemplate } from './lib/util.mjs';
+import { escapeAttr, fillTemplate } from './lib/util.mjs';
 import { renderTopicPage, renderHomeMosaic, renderPillarPage, familyFor } from './lib/render.mjs';
 import { renderAtlasPage } from './lib/atlas.mjs';
 import { ensurePlaceholder, ensurePillarPlaceholder } from './lib/placeholder.mjs';

@@ -56,11 +56,10 @@ misbah-exploration/
 
 ## Content model
 
-Three top-level types:
+Two top-level types:
 
 - **topics** — `content/topics/<slug>.md`. The atom. Self-contained essay. Required fields: `title`, `summary`, `body`, at least one image with `source` + `credit`.
 - **pillars** — `content/pillars/<slug>.md`. Curated reading paths. `order:` array names children in suggested reading order.
-- **collections** — reserved for future use.
 
 A topic's `pillar` field links it to its parent pillar. Pillar children render as numbered cards on the hub page; on the topic page, the pillar nav shows prev/next/up.
 

@@ -289,7 +289,7 @@ function renderConstellation(related) {
 </aside>`;
 }
 
-export function pickTileSize(idx) {
+function pickTileSize(idx) {
   // Deterministic asymmetric pattern, never two large adjacent
   const pattern = ['lg', 'sm', 'sm', 'md', 'tall', 'sm', 'wide', 'xs', 'xs', 'md', 'sm', 'sm'];
   return 'tile--' + pattern[idx % pattern.length];
