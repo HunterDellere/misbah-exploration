@@ -43,14 +43,18 @@ export async function ensureResponsiveVariants(rootDir, slug) {
   if (!src) return [];
   const dir = join(rootDir, 'assets/images/topics', slug);
   const srcStat = statSync(src.path);
+  const meta = await sharp(src.path).metadata();
+  const srcW = meta.width || 0;
   const out = [];
-  for (const w of WIDTHS) {
+  // Skip widths that would upscale the source (waste of bytes).
+  const targetWidths = WIDTHS.filter((w) => w <= srcW || w === Math.min(...WIDTHS));
+  for (const w of targetWidths) {
     const file = join(dir, `hero@${w}.webp`);
     const skip = existsSync(file) && statSync(file).mtimeMs >= srcStat.mtimeMs;
     if (!skip) {
       await sharp(src.path)
         .resize({ width: w, withoutEnlargement: true })
-        .webp({ quality: 82 })
+        .webp({ quality: 80 })
         .toFile(file);
     }
     out.push({ width: w, file: `hero@${w}.webp` });
