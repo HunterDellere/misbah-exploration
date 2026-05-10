@@ -1,7 +1,9 @@
-name: Deploy to GitHub Pages
+name: Build, Test, Deploy
 
 on:
   push:
+    branches: [main]
+  pull_request:
     branches: [main]
   workflow_dispatch:
 
@@ -27,6 +29,9 @@ jobs:
 
       - run: npm ci
 
+      - name: Lint
+        run: npm run lint
+
       - name: Verify (validate + build + check)
         env:
           SITE_URL: https://hunterdellere.github.io/misbah-exploration
@@ -38,16 +43,93 @@ jobs:
           cp index.html 404.html random.html sitemap.xml feed.xml robots.txt sw.js _site/ 2>/dev/null || true
           cp style.css _site/
           cp -r pages data assets icons scripts _site/
+          [ -d og ] && cp -r og _site/ || true
+          [ -d _site/og ] || mkdir -p _site/og
           touch _site/.nojekyll
 
+      - name: Upload site artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: site
+          path: _site
+          retention-days: 1
+
       - uses: actions/configure-pages@v5
+        if: github.ref == 'refs/heads/main'
 
       - uses: actions/upload-pages-artifact@v3
+        if: github.ref == 'refs/heads/main'
         with:
           path: _site
 
-  deploy:
+  test:
     needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - run: npm ci
+
+      - name: Download site artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: site
+          path: _site
+
+      - name: Restore generated files into repo root
+        run: |
+          cp -r _site/pages _site/data .
+          [ -f _site/index.html ] && cp _site/index.html .
+          [ -f _site/404.html ] && cp _site/404.html .
+          [ -f _site/random.html ] && cp _site/random.html .
+          [ -f _site/sitemap.xml ] && cp _site/sitemap.xml .
+          [ -f _site/feed.xml ] && cp _site/feed.xml .
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Playwright tests
+        run: npx playwright test
+
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report
+          retention-days: 7
+
+  lighthouse:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Download site artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: site
+          path: _site
+
+      - name: Run Lighthouse CI
+        run: |
+          npm install -g @lhci/cli@0.13.x
+          lhci autorun --config=lighthouserc.json
+        continue-on-error: true
+
+  deploy:
+    needs: [test, lighthouse]
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment:
       name: github-pages
