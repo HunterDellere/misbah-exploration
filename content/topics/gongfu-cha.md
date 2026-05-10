@@ -6,6 +6,8 @@ status: complete
 featured: true
 updated: 2026-05-10
 tags: [tea, china, ritual, sensory]
+pillar: tea
+order: 4
 geo:
   lat: 24.88
   lng: 118.58

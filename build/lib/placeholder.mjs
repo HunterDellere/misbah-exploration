@@ -68,6 +68,41 @@ ${arcs.join('')}
   writeFileSync(svgFile, svg);
 }
 
+export function ensurePillarPlaceholder(rootAssetsDir, slug, hue, title) {
+  const dir = join(rootAssetsDir, 'images/pillars', slug);
+  const file = join(dir, 'hero.jpg');
+  const svgFile = join(dir, 'hero.svg');
+  if (existsSync(file) || existsSync(svgFile)) return;
+  mkdirSync(dir, { recursive: true });
+
+  const p = PALETTES[hue] || PALETTES.default;
+  const seed = hash(slug + ':pillar');
+  const lines = [];
+  for (let i = 0; i < 14; i++) {
+    const y = 50 + i * 60 + ((seed >> i) & 15);
+    lines.push(`<path d="M -50 ${y} Q 800 ${y + ((seed >> (i*2)) & 30) - 15} 1650 ${y}" fill="none" stroke="${p.c}" stroke-opacity="${0.04 + (i % 4) * 0.04}" stroke-width="${1 + (i % 3)}"/>`);
+  }
+
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+<defs>
+  <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="${p.a}"/><stop offset="1" stop-color="${p.b}"/>
+  </linearGradient>
+  <radialGradient id="vignette" cx="0.5" cy="0.5" r="0.7">
+    <stop offset="0.5" stop-color="rgba(0,0,0,0)"/><stop offset="1" stop-color="rgba(0,0,0,0.55)"/>
+  </radialGradient>
+</defs>
+<rect width="1600" height="900" fill="url(#g)"/>
+${lines.join('')}
+<rect width="1600" height="900" fill="url(#vignette)"/>
+<g font-family="Fraunces, serif" fill="${p.c}" opacity="0.92">
+  <text x="80" y="780" font-size="120" font-weight="500" letter-spacing="-3">${escape(title)}</text>
+  <text x="80" y="120" font-size="22" letter-spacing="6" font-family="JetBrains Mono, monospace" fill-opacity="0.7">PILLAR · MISBAH · EXPLORATION</text>
+</g>
+</svg>`;
+  writeFileSync(svgFile, svg);
+}
+
 function escape(s) {
   return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }

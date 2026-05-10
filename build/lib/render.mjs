@@ -1,5 +1,5 @@
 import { marked } from 'marked';
-import { escapeHtml, escapeAttr } from './util.mjs';
+import { escapeHtml, escapeAttr, slugify } from './util.mjs';
 
 marked.setOptions({ gfm: true, breaks: false });
 
@@ -9,16 +9,110 @@ const TOPIC_FAMILIES = {
   travel: { label: 'Travel',    color: 'travel' },
   anthropology: { label: 'Anthropology', color: 'anthro' },
   science: { label: 'Science',  color: 'science' },
+  cartography: { label: 'Cartography', color: 'science' },
   craft: { label: 'Craft',      color: 'craft' },
   experience: { label: 'Experience', color: 'experience' },
   food: { label: 'Food',        color: 'food' },
 };
 
+const PILLAR_LABELS = {
+  anthropology: 'Anthropology',
+  tea: 'Tea',
+  cartography: 'Cartography',
+};
+
 export function familyFor(topic) {
+  // Pillar takes precedence over tag-based family
+  if (topic.pillar && TOPIC_FAMILIES[topic.pillar]) {
+    return { key: topic.pillar, ...TOPIC_FAMILIES[topic.pillar] };
+  }
   for (const t of (topic.tags || [])) {
     if (TOPIC_FAMILIES[t]) return { key: t, ...TOPIC_FAMILIES[t] };
   }
   return { key: 'default', label: 'Topic', color: 'default' };
+}
+
+// Inject heading IDs and collect TOC entries from rendered HTML.
+function injectHeadingIdsAndCollectToc(html) {
+  const toc = [];
+  const used = new Set();
+  const result = html.replace(/<h([23])>([\s\S]*?)<\/h\1>/g, (_, level, inner) => {
+    const text = inner.replace(/<[^>]+>/g, '').trim();
+    let id = slugify(text);
+    if (!id) id = 'section';
+    let unique = id, i = 2;
+    while (used.has(unique)) unique = `${id}-${i++}`;
+    used.add(unique);
+    toc.push({ level: Number(level), id: unique, text });
+    return `<h${level} id="${unique}"><a class="anchor-link" href="#${unique}" aria-label="Link to this section"><span aria-hidden="true">§</span></a>${inner}</h${level}>`;
+  });
+  return { html: result, toc };
+}
+
+function renderTocSidebar(toc) {
+  if (toc.length < 3) return '';
+  const items = toc.map(item => {
+    const cls = `toc-item toc-item--${item.level === 2 ? 'h2' : 'h3'}`;
+    return `<li class="${cls}"><a href="#${item.id}" data-toc-target="${item.id}">${escapeHtml(item.text)}</a></li>`;
+  }).join('');
+  return `<aside class="toc" aria-label="On this page">
+    <div class="toc-eyebrow">On this page</div>
+    <ul class="toc-list">${items}</ul>
+  </aside>`;
+}
+
+function pillarHref(slug, depth = 2) {
+  const up = '../'.repeat(depth);
+  return `${up}pages/pillars/${slug}.html`;
+}
+
+function topicHref(slug, depth = 2) {
+  const up = '../'.repeat(depth);
+  return `${up}pages/topics/${slug}.html`;
+}
+
+function rootHref(depth = 2) {
+  return '../'.repeat(depth) + 'index.html';
+}
+
+function renderBreadcrumbs(topic, depth = 2) {
+  const crumbs = [`<a href="${rootHref(depth)}">Home</a>`];
+  if (topic.pillar && PILLAR_LABELS[topic.pillar]) {
+    crumbs.push(`<a href="${pillarHref(topic.pillar, depth)}">${PILLAR_LABELS[topic.pillar]}</a>`);
+  }
+  crumbs.push(`<span aria-current="page">${escapeHtml(topic.title)}</span>`);
+  return `<nav class="breadcrumbs" aria-label="Breadcrumb">
+    ${crumbs.join('<span class="breadcrumb-sep" aria-hidden="true">›</span>')}
+  </nav>`;
+}
+
+function renderPillarNav(topic, all) {
+  if (!topic.pillar) return '';
+  const siblings = all
+    .filter(t => t.pillar === topic.pillar)
+    .sort((a, b) => (a.order || 99) - (b.order || 99));
+  const idx = siblings.findIndex(t => t.slug === topic.slug);
+  if (idx === -1) return '';
+  const prev = siblings[idx - 1];
+  const next = siblings[idx + 1];
+  const pillarLabel = PILLAR_LABELS[topic.pillar] || topic.pillar;
+  const total = siblings.length;
+  return `<nav class="pillar-nav" aria-label="Pillar navigation">
+    <div class="pillar-nav-inner">
+      ${prev ? `<a class="pillar-nav-prev" href="${topicHref(prev.slug, 2)}">
+        <span class="pillar-nav-eyebrow">← Previous in ${escapeHtml(pillarLabel)}</span>
+        <span class="pillar-nav-title">${escapeHtml(prev.title)}</span>
+      </a>` : '<span></span>'}
+      <a class="pillar-nav-up" href="${pillarHref(topic.pillar, 2)}">
+        <span class="pillar-nav-eyebrow">${escapeHtml(pillarLabel)}</span>
+        <span class="pillar-nav-position">${idx + 1} / ${total}</span>
+      </a>
+      ${next ? `<a class="pillar-nav-next" href="${topicHref(next.slug, 2)}">
+        <span class="pillar-nav-eyebrow">Next in ${escapeHtml(pillarLabel)} →</span>
+        <span class="pillar-nav-title">${escapeHtml(next.title)}</span>
+      </a>` : '<span></span>'}
+    </div>
+  </nav>`;
 }
 
 export function renderTopicPage(topic, all) {
@@ -46,12 +140,15 @@ export function renderTopicPage(topic, all) {
       ${heroAttrib}
     </header>`;
 
-  const bodyHtml = topic.body ? marked.parse(topic.body) : '';
+  const rawHtml = topic.body ? marked.parse(topic.body) : '';
+  const { html: bodyHtml, toc } = injectHeadingIdsAndCollectToc(rawHtml);
+  const tocSidebar = renderTocSidebar(toc);
+
   const inlineImages = (topic.images || []).filter(i => i.role !== 'hero').map(img => renderFigure(topic.slug, img)).join('\n');
 
   const sources = (topic.sources || []).length
     ? `<section class="sources" aria-label="Sources">
-        <h2>Sources & further reading</h2>
+        <h2 id="sources">Sources & further reading</h2>
         <ol>
           ${topic.sources.map(s => `<li><a href="${escapeAttr(s.url || '#')}" rel="noopener noreferrer" target="_blank">${escapeHtml(s.title || s.url)}</a>${s.note ? ` — <span>${escapeHtml(s.note)}</span>` : ''}</li>`).join('\n')}
         </ol>
@@ -60,16 +157,31 @@ export function renderTopicPage(topic, all) {
 
   const related = computeRelated(topic, all);
   const constellation = related.length ? renderConstellation(related) : '';
+  const pillarNav = renderPillarNav(topic, all);
+  const breadcrumbs = renderBreadcrumbs(topic, 2);
+
+  const wordCount = (topic.body || '').split(/\s+/).filter(Boolean).length;
+  const readingTimeMin = Math.max(1, Math.round(wordCount / 220));
 
   return `
 ${heroBlock}
-<main id="main-content" class="topic-body" data-family-bg="${fam.color}">
-  <div class="read-column">
+<div class="reading-progress" aria-hidden="true"><div class="reading-progress-bar"></div></div>
+${breadcrumbs}
+<main id="main-content" class="topic-body${tocSidebar ? ' has-toc' : ''}" data-family-bg="${fam.color}">
+  ${tocSidebar}
+  <article class="read-column">
+    <div class="read-meta">
+      <span class="read-meta-time">${readingTimeMin} min read</span>
+      <span class="read-meta-sep" aria-hidden="true">·</span>
+      <span class="read-meta-words">${wordCount.toLocaleString()} words</span>
+      ${topic.updated ? `<span class="read-meta-sep" aria-hidden="true">·</span><span class="read-meta-updated">Updated ${escapeHtml(formatDate(topic.updated))}</span>` : ''}
+    </div>
     ${bodyHtml}
     ${inlineImages}
     ${sources}
-  </div>
+  </article>
 </main>
+${pillarNav}
 ${constellation}`;
 }
 
@@ -109,23 +221,33 @@ function imagePath(slug, src) {
 
 function formatEra(era) {
   if (!era) return '';
-  const s = era.start ?? '?';
-  const e = era.end ?? 'present';
-  return `${s} — ${e}`;
+  const fmt = v => {
+    if (v == null) return '?';
+    if (v === 'present') return 'present';
+    if (typeof v === 'number') return v < 0 ? `${Math.abs(v)} BCE` : `${v} CE`;
+    return String(v);
+  };
+  return `${fmt(era.start)} — ${fmt(era.end)}`;
+}
+
+function formatDate(d) {
+  if (!d) return '';
+  const dt = new Date(d);
+  if (isNaN(dt)) return String(d);
+  return dt.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 }
 
 function computeRelated(topic, all) {
-  // Explicit related[] wins, fall back to overlapping tags
   const explicit = (topic.related || [])
     .map(s => all.find(t => t.slug === s))
     .filter(Boolean);
-  if (explicit.length >= 3) return explicit.slice(0, 6);
+  if (explicit.length >= 4) return explicit.slice(0, 6);
 
   const others = all.filter(t => t.slug !== topic.slug);
   const tagSet = new Set(topic.tags || []);
   const scored = others.map(t => ({
     t,
-    score: (t.tags || []).filter(x => tagSet.has(x)).length,
+    score: (t.tags || []).filter(x => tagSet.has(x)).length + (t.pillar === topic.pillar ? 1 : 0),
   })).filter(s => s.score > 0)
     .sort((a, b) => b.score - a.score)
     .map(s => s.t);
@@ -164,14 +286,13 @@ function renderConstellation(related) {
 </aside>`;
 }
 
-export function pickTileSize(idx, total) {
+export function pickTileSize(idx) {
   // Deterministic asymmetric pattern, never two large adjacent
   const pattern = ['lg', 'sm', 'sm', 'md', 'tall', 'sm', 'wide', 'xs', 'xs', 'md', 'sm', 'sm'];
   return 'tile--' + pattern[idx % pattern.length];
 }
 
-export function renderHomeMosaic(topics) {
-  // Order by `featured` first, then updated desc, then title.
+export function renderHomeMosaic(topics, pillars = []) {
   const sorted = [...topics].sort((a, b) => {
     if ((b.featured ? 1 : 0) - (a.featured ? 1 : 0)) return (b.featured ? 1 : 0) - (a.featured ? 1 : 0);
     if (a.updated && b.updated) return String(b.updated).localeCompare(String(a.updated));
@@ -181,8 +302,8 @@ export function renderHomeMosaic(topics) {
   const tiles = sorted.map((t, idx) => {
     const fam = familyFor(t);
     const img = (t.images || []).find(i => i.role === 'hero') || (t.images || [])[0];
-    const src = img ? `../assets/images/topics/${t.slug}/${img.src}` : '';
-    const size = pickTileSize(idx, sorted.length);
+    const src = img ? `assets/images/topics/${t.slug}/${img.src}` : '';
+    const size = pickTileSize(idx);
     const meta = [];
     meta.push(escapeHtml(fam.label));
     if (t.geo?.place) meta.push(`◉ ${escapeHtml(t.geo.place)}`);
@@ -197,19 +318,127 @@ export function renderHomeMosaic(topics) {
     </a>`;
   }).join('\n');
 
+  const pillarStrip = pillars.length ? `
+  <section class="pillar-strip" aria-label="Pillars">
+    <div class="pillar-strip-inner">
+      <div class="pillar-strip-eyebrow">Pillars</div>
+      <div class="pillar-strip-grid">
+        ${pillars.map(p => `<a class="pillar-card pillar-card--${p.hue || 'default'}" href="pages/pillars/${escapeAttr(p.slug)}.html">
+          <div class="pillar-card-eyebrow">${p.count} essay${p.count === 1 ? '' : 's'}</div>
+          <h2 class="pillar-card-title">${escapeHtml(p.title)}</h2>
+          <p class="pillar-card-summary">${escapeHtml(p.summary)}</p>
+          <span class="pillar-card-cta">Open the pillar →</span>
+        </a>`).join('')}
+      </div>
+    </div>
+  </section>` : '';
+
   return `
 <main id="main-content" class="home">
   <header class="home-hero">
     <div>
       <h1 class="home-hero-title">An atlas of <em>things worth a longer look</em>.</h1>
-      <p class="home-hero-sub">A personal collection — tea, anthropology, travel, history, craft, and what I happened to find absorbing along the way.</p>
+      <p class="home-hero-sub">A personal collection — tea, anthropology, travel, history, craft, cartography, and what I happened to find absorbing along the way.</p>
+      <div class="home-hero-shortcuts">
+        <button type="button" class="home-shortcut" data-search-trigger>
+          <span class="home-shortcut-icon" aria-hidden="true">⌕</span>
+          <span class="home-shortcut-label">Search topics</span>
+          <span class="home-shortcut-key" aria-hidden="true"><kbd>⌘</kbd><kbd>K</kbd></span>
+        </button>
+        <a class="home-shortcut" href="pages/atlas.html">
+          <span class="home-shortcut-icon" aria-hidden="true">◉</span>
+          <span class="home-shortcut-label">Open the atlas</span>
+        </a>
+        <a class="home-shortcut" href="pages/timeline.html">
+          <span class="home-shortcut-icon" aria-hidden="true">═</span>
+          <span class="home-shortcut-label">Timeline</span>
+        </a>
+      </div>
     </div>
     <aside class="home-hero-aside">
-      ${topics.length} topic${topics.length === 1 ? '' : 's'} · curated by Hunter Dellere
+      ${topics.length} topic${topics.length === 1 ? '' : 's'} · ${pillars.length} pillar${pillars.length === 1 ? '' : 's'}<br>
+      curated by Hunter Dellere
     </aside>
   </header>
-  <div class="mosaic">
-    ${tiles}
-  </div>
+  ${pillarStrip}
+  <section class="mosaic-section">
+    <header class="section-header">
+      <h2 class="section-title">All topics</h2>
+      <a class="section-cta" href="pages/tags.html">Browse by tag →</a>
+    </header>
+    <div class="mosaic">
+      ${tiles}
+    </div>
+  </section>
 </main>`;
+}
+
+export function renderPillarPage(pillar, allTopics, allPillars) {
+  const children = (pillar.order || [])
+    .map(s => allTopics.find(t => t.slug === s))
+    .filter(Boolean);
+  const hero = (pillar.images || []).find(i => i.role === 'hero') || (pillar.images || [])[0];
+  const heroSrc = hero ? imagePathPillar(pillar.slug, hero.src) : null;
+  const fam = TOPIC_FAMILIES[pillar.hue] || TOPIC_FAMILIES[pillar.slug] || { color: 'default', label: pillar.title };
+
+  const bodyHtml = pillar.body ? marked.parse(pillar.body) : '';
+
+  const childCards = children.map((t, i) => {
+    const img = (t.images || []).find(im => im.role === 'hero') || (t.images || [])[0];
+    const src = img ? `../../assets/images/topics/${t.slug}/${img.src}` : '';
+    return `<a class="pillar-child" href="../topics/${escapeAttr(t.slug)}.html" style="--child-bg: url('${escapeAttr(src)}')">
+      <div class="pillar-child-num" aria-hidden="true">${String(i + 1).padStart(2, '0')}</div>
+      <div class="pillar-child-body">
+        <h3 class="pillar-child-title">${escapeHtml(t.title)}</h3>
+        <p class="pillar-child-summary">${escapeHtml(t.summary || '')}</p>
+        ${t.geo?.place ? `<div class="pillar-child-meta">◉ ${escapeHtml(t.geo.place)}</div>` : ''}
+      </div>
+      <div class="pillar-child-thumb" aria-hidden="true"></div>
+    </a>`;
+  }).join('');
+
+  const otherPillars = (allPillars || []).filter(p => p.slug !== pillar.slug);
+  const otherStrip = otherPillars.length ? `<aside class="other-pillars" aria-label="Other pillars">
+    <div class="other-pillars-eyebrow">Other pillars</div>
+    <div class="other-pillars-grid">
+      ${otherPillars.map(p => `<a class="other-pillar" href="${escapeAttr(p.slug)}.html">
+        <span class="other-pillar-title">${escapeHtml(p.title)}</span>
+        <span class="other-pillar-count">${p.count} essays →</span>
+      </a>`).join('')}
+    </div>
+  </aside>` : '';
+
+  return `
+<header class="pillar-hero ${heroSrc ? '' : 'pillar-hero--minimal'}" data-family="${fam.color}">
+  ${heroSrc ? `<img class="pillar-hero-img" src="${escapeAttr(heroSrc)}" alt="${escapeAttr(pillar.title)}" loading="eager">` : ''}
+  <div class="pillar-hero-overlay">
+    <div class="pillar-hero-overlay-inner">
+      <div class="pillar-hero-eyebrow">Pillar · ${children.length} essay${children.length === 1 ? '' : 's'}</div>
+      <h1 class="pillar-hero-title">${escapeHtml(pillar.title)}</h1>
+      <p class="pillar-hero-summary">${escapeHtml(pillar.summary || '')}</p>
+    </div>
+  </div>
+</header>
+<nav class="breadcrumbs" aria-label="Breadcrumb">
+  <a href="../../index.html">Home</a>
+  <span class="breadcrumb-sep" aria-hidden="true">›</span>
+  <span aria-current="page">${escapeHtml(pillar.title)}</span>
+</nav>
+<main id="main-content" class="pillar-body">
+  <div class="pillar-intro read-column">
+    ${bodyHtml}
+  </div>
+  <section class="pillar-children" aria-label="${escapeAttr(pillar.title)} essays">
+    <div class="pillar-children-eyebrow">Read in order</div>
+    <div class="pillar-children-list">
+      ${childCards}
+    </div>
+  </section>
+  ${otherStrip}
+</main>`;
+}
+
+function imagePathPillar(slug, src) {
+  if (/^https?:/i.test(src)) return src;
+  return `../../assets/images/pillars/${slug}/${src}`;
 }

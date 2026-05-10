@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+<defs>
+  <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#2c3949"/><stop offset="1" stop-color="#0e1726"/>
+  </linearGradient>
+  <radialGradient id="vignette" cx="0.5" cy="0.5" r="0.7">
+    <stop offset="0.5" stop-color="rgba(0,0,0,0)"/><stop offset="1" stop-color="rgba(0,0,0,0.55)"/>
+  </radialGradient>
+</defs>
+<rect width="1600" height="900" fill="url(#g)"/>
+<path d="M -50 59 Q 800 52 1650 59" fill="none" stroke="#c9a44a" stroke-opacity="0.04" stroke-width="1"/><path d="M -50 114 Q 800 109 1650 114" fill="none" stroke="#c9a44a" stroke-opacity="0.08" stroke-width="2"/><path d="M -50 180 Q 800 175 1650 180" fill="none" stroke="#c9a44a" stroke-opacity="0.12" stroke-width="3"/><path d="M -50 235 Q 800 246 1650 235" fill="none" stroke="#c9a44a" stroke-opacity="0.16" stroke-width="1"/><path d="M -50 300 Q 800 307 1650 300" fill="none" stroke="#c9a44a" stroke-opacity="0.04" stroke-width="2"/><path d="M -50 355 Q 800 352 1650 355" fill="none" stroke="#c9a44a" stroke-opacity="0.08" stroke-width="3"/><path d="M -50 420 Q 800 431 1650 420" fill="none" stroke="#c9a44a" stroke-opacity="0.12" stroke-width="1"/><path d="M -50 483 Q 800 490 1650 483" fill="none" stroke="#c9a44a" stroke-opacity="0.16" stroke-width="2"/><path d="M -50 536 Q 800 525 1650 536" fill="none" stroke="#c9a44a" stroke-opacity="0.04" stroke-width="3"/><path d="M -50 601 Q 800 610 1650 601" fill="none" stroke="#c9a44a" stroke-opacity="0.08" stroke-width="1"/><path d="M -50 663 Q 800 654 1650 663" fill="none" stroke="#c9a44a" stroke-opacity="0.12" stroke-width="2"/><path d="M -50 716 Q 800 701 1650 716" fill="none" stroke="#c9a44a" stroke-opacity="0.16" stroke-width="3"/><path d="M -50 781 Q 800 774 1650 781" fill="none" stroke="#c9a44a" stroke-opacity="0.04" stroke-width="1"/><path d="M -50 843 Q 800 854 1650 843" fill="none" stroke="#c9a44a" stroke-opacity="0.08" stroke-width="2"/>
+<rect width="1600" height="900" fill="url(#vignette)"/>
+<g font-family="Fraunces, serif" fill="#c9a44a" opacity="0.92">
+  <text x="80" y="780" font-size="120" font-weight="500" letter-spacing="-3">Anthropology</text>
+  <text x="80" y="120" font-size="22" letter-spacing="6" font-family="JetBrains Mono, monospace" fill-opacity="0.7">PILLAR · MISBAH · EXPLORATION</text>
+</g>
+</svg>

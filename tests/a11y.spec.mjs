@@ -4,7 +4,12 @@ import AxeBuilder from '@axe-core/playwright';
 const PAGES = [
   { name: 'home', path: '/' },
   { name: 'topic', path: '/pages/topics/gongfu-cha.html' },
+  { name: 'long-essay', path: '/pages/topics/origins-of-anthropology.html' },
   { name: 'atlas', path: '/pages/atlas.html' },
+  { name: 'pillar', path: '/pages/pillars/anthropology.html' },
+  { name: 'tags', path: '/pages/tags.html' },
+  { name: 'timeline', path: '/pages/timeline.html' },
+  { name: '404', path: '/404.html' },
 ];
 
 for (const p of PAGES) {

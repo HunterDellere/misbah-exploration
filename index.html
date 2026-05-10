@@ -1,32 +1,34 @@
 <!DOCTYPE html>
-<!-- built 2026-05-10T06:14:30.417Z -->
+<!-- built 2026-05-10T06:48:43.434Z -->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>an atlas of things worth a longer look — misbah · exploration</title>
-<meta name="description" content="A personal visual atlas — tea, anthropology, travel, history, craft.">
+<meta name="description" content="A personal visual atlas — anthropology, tea, cartography, travel, history, craft.">
 <meta name="theme-color" content="#f4ecd8" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0e1726" media="(prefers-color-scheme: dark)">
 <meta name="color-scheme" content="light dark">
 <script>(function(){try{var t=localStorage.getItem('mis-theme');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}else if(!t&&window.matchMedia('(prefers-color-scheme: dark)').matches){document.documentElement.setAttribute('data-theme','dark');}}catch(e){}})();</script>
 <meta name="apple-mobile-web-app-title" content="misbah">
 <meta name="application-name" content="misbah · exploration">
-<link rel="canonical" href="https://misbah.example/">
+<link rel="canonical" href="https://hunterdellere.github.io/misbah-exploration/">
+<link rel="alternate" type="application/rss+xml" title="misbah · exploration" href="feed.xml">
 <meta property="og:type" content="website">
 <meta property="og:title" content="misbah · exploration">
-<meta property="og:description" content="A personal visual atlas — tea, anthropology, travel, history, craft.">
-<meta property="og:url" content="https://misbah.example">
+<meta property="og:description" content="A personal visual atlas — anthropology, tea, cartography, and what was worth a longer look.">
+<meta property="og:url" content="https://hunterdellere.github.io/misbah-exploration">
 <meta property="og:site_name" content="misbah · exploration">
 
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="misbah · exploration">
-<meta name="twitter:description" content="A personal visual atlas — tea, anthropology, travel, history, craft.">
+<meta name="twitter:description" content="A personal visual atlas — anthropology, tea, cartography, and what was worth a longer look.">
+<link rel="icon" type="image/svg+xml" href="icons/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,300..800,0..100&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" onload="this.onload=null;this.rel='stylesheet'">
 <noscript><link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,300..800,0..100&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"></noscript>
-<link rel="stylesheet" href="style.css?v=1">
+<link rel="stylesheet" href="style.css?v=2">
 
 </head>
 <body data-category="home">
@@ -37,7 +39,14 @@
     <span class="brand-mark">M</span><span class="brand-name">misbah</span><span class="brand-sep">·</span><span class="brand-sub">exploration</span>
   </a>
   <div class="topnav-right">
+    <button type="button" class="topnav-search" data-search-trigger aria-label="Search topics (Cmd-K)">
+      <span class="topnav-search-icon" aria-hidden="true">⌕</span>
+      <span class="topnav-search-label">Search</span>
+      <span class="topnav-search-key" aria-hidden="true"><kbd>⌘K</kbd></span>
+    </button>
     <a href="pages/atlas.html" class="topnav-link">Atlas</a>
+    <a href="pages/timeline.html" class="topnav-link">Timeline</a>
+    <a href="pages/tags.html" class="topnav-link topnav-link--secondary">Tags</a>
     <a href="random.html" class="topnav-link" aria-label="A random topic">↻</a>
     <button class="theme-toggle" type="button" aria-label="Toggle dark mode" id="theme-toggle">
       <span class="tt-sun" aria-hidden="true">☀</span>
@@ -51,15 +60,78 @@
   <header class="home-hero">
     <div>
       <h1 class="home-hero-title">An atlas of <em>things worth a longer look</em>.</h1>
-      <p class="home-hero-sub">A personal collection — tea, anthropology, travel, history, craft, and what I happened to find absorbing along the way.</p>
+      <p class="home-hero-sub">A personal collection — tea, anthropology, travel, history, craft, cartography, and what I happened to find absorbing along the way.</p>
+      <div class="home-hero-shortcuts">
+        <button type="button" class="home-shortcut" data-search-trigger>
+          <span class="home-shortcut-icon" aria-hidden="true">⌕</span>
+          <span class="home-shortcut-label">Search topics</span>
+          <span class="home-shortcut-key" aria-hidden="true"><kbd>⌘</kbd><kbd>K</kbd></span>
+        </button>
+        <a class="home-shortcut" href="pages/atlas.html">
+          <span class="home-shortcut-icon" aria-hidden="true">◉</span>
+          <span class="home-shortcut-label">Open the atlas</span>
+        </a>
+        <a class="home-shortcut" href="pages/timeline.html">
+          <span class="home-shortcut-icon" aria-hidden="true">═</span>
+          <span class="home-shortcut-label">Timeline</span>
+        </a>
+      </div>
     </div>
     <aside class="home-hero-aside">
-      5 topics · curated by Hunter Dellere
+      19 topics · 3 pillars<br>
+      curated by Hunter Dellere
     </aside>
   </header>
-  <div class="mosaic">
-    <a class="tile tile--lg reveal" href="pages/topics/gongfu-cha.html"
-      style="--tile-bg: url('../assets/images/topics/gongfu-cha/hero.svg')"
+  
+  <section class="pillar-strip" aria-label="Pillars">
+    <div class="pillar-strip-inner">
+      <div class="pillar-strip-eyebrow">Pillars</div>
+      <div class="pillar-strip-grid">
+        <a class="pillar-card pillar-card--anthro" href="pages/pillars/anthropology.html">
+          <div class="pillar-card-eyebrow">5 essays</div>
+          <h2 class="pillar-card-title">Anthropology</h2>
+          <p class="pillar-card-summary">A discipline that began as a justification for empire and became, against itself, the most patient student of how human life is otherwise organized.</p>
+          <span class="pillar-card-cta">Open the pillar →</span>
+        </a><a class="pillar-card pillar-card--science" href="pages/pillars/cartography.html">
+          <div class="pillar-card-eyebrow">5 essays</div>
+          <h2 class="pillar-card-title">Cartography &amp; Exploration</h2>
+          <p class="pillar-card-summary">The history of mapmaking is a history of measurement — of how an ungrounded human intuition about the size and shape of the world was, by stages, replaced by a quantitative one.</p>
+          <span class="pillar-card-cta">Open the pillar →</span>
+        </a><a class="pillar-card pillar-card--tea" href="pages/pillars/tea.html">
+          <div class="pillar-card-eyebrow">6 essays</div>
+          <h2 class="pillar-card-title">Tea</h2>
+          <p class="pillar-card-summary">One species, six processing methods, four hundred years of imperial trade, and at least three living traditions of attentive practice — all of it still alive in the cup on the counter.</p>
+          <span class="pillar-card-cta">Open the pillar →</span>
+        </a>
+      </div>
+    </div>
+  </section>
+  <section class="mosaic-section">
+    <header class="section-header">
+      <h2 class="section-title">All topics</h2>
+      <a class="section-cta" href="pages/tags.html">Browse by tag →</a>
+    </header>
+    <div class="mosaic">
+      <a class="tile tile--lg reveal" href="pages/topics/camellia-sinensis.html"
+      style="--tile-bg: url('assets/images/topics/camellia-sinensis/hero.svg')"
+      aria-label="Camellia Sinensis">
+      <div class="tile-overlay">
+        <div class="tile-eyebrow"><span>Tea</span><span>◉ Yunnan, China</span></div>
+        <h2 class="tile-title">Camellia Sinensis</h2>
+        <p class="tile-summary">Every cup of tea on earth comes from one species — one species with two varieties, a few thousand named cultivars, and a still-unsettled origin story.</p>
+      </div>
+    </a>
+<a class="tile tile--sm reveal" href="pages/topics/eratosthenes-and-the-first-globe.html"
+      style="--tile-bg: url('assets/images/topics/eratosthenes-and-the-first-globe/hero.svg')"
+      aria-label="Eratosthenes and the First Globe">
+      <div class="tile-overlay">
+        <div class="tile-eyebrow"><span>Cartography</span><span>◉ Alexandria, Egypt</span></div>
+        <h2 class="tile-title">Eratosthenes and the First Globe</h2>
+        <p class="tile-summary">Two thousand two hundred and fifty years ago, a librarian in Alexandria measured the circumference of the Earth using a stick, a well, and the angular geometry of a shadow.</p>
+      </div>
+    </a>
+<a class="tile tile--sm reveal" href="pages/topics/gongfu-cha.html"
+      style="--tile-bg: url('assets/images/topics/gongfu-cha/hero.svg')"
       aria-label="Gongfu Cha">
       <div class="tile-overlay">
         <div class="tile-eyebrow"><span>Tea</span><span>◉ Fujian, China</span></div>
@@ -67,8 +139,26 @@
         <p class="tile-summary">A Chinese way of preparing tea where the goal is not the cup but the attention you bring to it.</p>
       </div>
     </a>
+<a class="tile tile--md reveal" href="pages/topics/gps-and-the-end-of-being-lost.html"
+      style="--tile-bg: url('assets/images/topics/gps-and-the-end-of-being-lost/hero.svg')"
+      aria-label="GPS and the End of Being Lost">
+      <div class="tile-overlay">
+        <div class="tile-eyebrow"><span>Cartography</span><span>◉ Schriever Space Force Base, Colorado</span></div>
+        <h2 class="tile-title">GPS and the End of Being Lost</h2>
+        <p class="tile-summary">A military system designed in the 1970s to guide nuclear submarines became, within a generation, an invisible utility on which the global economy and the human sense of place both quietly depend.</p>
+      </div>
+    </a>
+<a class="tile tile--tall reveal" href="pages/topics/longitude-problem.html"
+      style="--tile-bg: url('assets/images/topics/longitude-problem/hero.svg')"
+      aria-label="The Longitude Problem">
+      <div class="tile-overlay">
+        <div class="tile-eyebrow"><span>Cartography</span><span>◉ Greenwich, England</span></div>
+        <h2 class="tile-title">The Longitude Problem</h2>
+        <p class="tile-summary">For three centuries, the most important scientific problem in Europe was a problem of timekeeping — and the solution came not from the astronomers it was supposed to come from, but from a self-taught carpenter.</p>
+      </div>
+    </a>
 <a class="tile tile--sm reveal" href="pages/topics/oaxacan-mezcal.html"
-      style="--tile-bg: url('../assets/images/topics/oaxacan-mezcal/hero.svg')"
+      style="--tile-bg: url('assets/images/topics/oaxacan-mezcal/hero.svg')"
       aria-label="Oaxacan Mezcal">
       <div class="tile-overlay">
         <div class="tile-eyebrow"><span>Travel</span><span>◉ Oaxaca, Mexico</span></div>
@@ -76,8 +166,17 @@
         <p class="tile-summary">Smoke, agave, and a regional spirit whose definition is mostly an argument about how slowly things should be allowed to be made.</p>
       </div>
     </a>
-<a class="tile tile--sm reveal" href="pages/topics/sea-silk.html"
-      style="--tile-bg: url('../assets/images/topics/sea-silk/hero.svg')"
+<a class="tile tile--wide reveal" href="pages/topics/origins-of-anthropology.html"
+      style="--tile-bg: url('assets/images/topics/origins-of-anthropology/hero.svg')"
+      aria-label="The Origins of Anthropology">
+      <div class="tile-overlay">
+        <div class="tile-eyebrow"><span>Anthropology</span><span>◉ London, England</span></div>
+        <h2 class="tile-title">The Origins of Anthropology</h2>
+        <p class="tile-summary">How a discipline built to justify empire became, over a century and a half, a discipline obsessed with critiquing the conditions of its own production.</p>
+      </div>
+    </a>
+<a class="tile tile--xs reveal" href="pages/topics/sea-silk.html"
+      style="--tile-bg: url('assets/images/topics/sea-silk/hero.svg')"
       aria-label="Sea Silk">
       <div class="tile-overlay">
         <div class="tile-eyebrow"><span>Anthropology</span><span>◉ Sant'Antioco, Sardinia</span></div>
@@ -85,8 +184,80 @@
         <p class="tile-summary">A fabric woven from the byssus filaments of a single Mediterranean clam, kept alive by one woman on the island of Sant'Antioco.</p>
       </div>
     </a>
-<a class="tile tile--md reveal" href="pages/topics/silk-road-cities.html"
-      style="--tile-bg: url('../assets/images/topics/silk-road-cities/hero.svg')"
+<a class="tile tile--xs reveal" href="pages/topics/tea-and-empire.html"
+      style="--tile-bg: url('assets/images/topics/tea-and-empire/hero.svg')"
+      aria-label="Tea &amp; Empire">
+      <div class="tile-overlay">
+        <div class="tile-eyebrow"><span>Tea</span><span>◉ Hong Kong</span></div>
+        <h2 class="tile-title">Tea &amp; Empire</h2>
+        <p class="tile-summary">How a Chinese beverage became a British addiction, the addiction became a trade deficit, the deficit became the opium trade, and the trade became a war that rewrote the political map of Asia.</p>
+      </div>
+    </a>
+<a class="tile tile--md reveal" href="pages/topics/anthropology-after-1980.html"
+      style="--tile-bg: url('assets/images/topics/anthropology-after-1980/hero.svg')"
+      aria-label="Anthropology After 1980">
+      <div class="tile-overlay">
+        <div class="tile-eyebrow"><span>Anthropology</span><span>◉ Berkeley, California</span></div>
+        <h2 class="tile-title">Anthropology After 1980</h2>
+        <p class="tile-summary">The discipline turned reflexive, post-colonial, and politically explicit — and in doing so found itself unable to ignore the conditions that had once made it possible.</p>
+      </div>
+    </a>
+<a class="tile tile--sm reveal" href="pages/topics/blue-marble.html"
+      style="--tile-bg: url('assets/images/topics/blue-marble/hero.svg')"
+      aria-label="The Blue Marble">
+      <div class="tile-overlay">
+        <div class="tile-eyebrow"><span>Cartography</span><span>◉ 29,000 km from Earth</span></div>
+        <h2 class="tile-title">The Blue Marble</h2>
+        <p class="tile-summary">One photograph, taken by an unidentified Apollo 17 astronaut from 29,000 km out, became the first time the entire human species saw its home from outside.</p>
+      </div>
+    </a>
+<a class="tile tile--sm reveal" href="pages/topics/four-fields.html"
+      style="--tile-bg: url('assets/images/topics/four-fields/hero.svg')"
+      aria-label="The Four-Fields Model">
+      <div class="tile-overlay">
+        <div class="tile-eyebrow"><span>Anthropology</span><span>◉ Columbia University, New York</span></div>
+        <h2 class="tile-title">The Four-Fields Model</h2>
+        <p class="tile-summary">A peculiarly American structural decision — that anthropology is biology, archaeology, linguistics, and ethnography under one roof — and what it has cost and bought.</p>
+      </div>
+    </a>
+<a class="tile tile--lg reveal" href="pages/topics/japanese-tea-ceremony.html"
+      style="--tile-bg: url('assets/images/topics/japanese-tea-ceremony/hero.svg')"
+      aria-label="Japanese Tea Ceremony">
+      <div class="tile-overlay">
+        <div class="tile-eyebrow"><span>Tea</span><span>◉ Kyoto, Japan</span></div>
+        <h2 class="tile-title">Japanese Tea Ceremony</h2>
+        <p class="tile-summary">A practice that calls itself &quot;the way of tea&quot; and is, on close inspection, almost entirely about everything except the tea.</p>
+      </div>
+    </a>
+<a class="tile tile--sm reveal" href="pages/topics/kinship-and-structuralism.html"
+      style="--tile-bg: url('assets/images/topics/kinship-and-structuralism/hero.svg')"
+      aria-label="Kinship &amp; Structuralism">
+      <div class="tile-overlay">
+        <div class="tile-eyebrow"><span>Anthropology</span><span>◉ Paris, France</span></div>
+        <h2 class="tile-title">Kinship &amp; Structuralism</h2>
+        <p class="tile-summary">For sixty years anthropology's central project was to understand how marriage rules and kinship terminologies organize societies. Then, almost suddenly, it stopped.</p>
+      </div>
+    </a>
+<a class="tile tile--sm reveal" href="pages/topics/mercator-projection.html"
+      style="--tile-bg: url('assets/images/topics/mercator-projection/hero.svg')"
+      aria-label="Mercator and the Politics of Projection">
+      <div class="tile-overlay">
+        <div class="tile-eyebrow"><span>Cartography</span><span>◉ Antwerp, Belgium</span></div>
+        <h2 class="tile-title">Mercator and the Politics of Projection</h2>
+        <p class="tile-summary">Every flat map is a lie. The interesting question is which kind of lie it is, who benefits from that particular lie, and what would be lost if we told a different one.</p>
+      </div>
+    </a>
+<a class="tile tile--md reveal" href="pages/topics/participant-observation.html"
+      style="--tile-bg: url('assets/images/topics/participant-observation/hero.svg')"
+      aria-label="Participant Observation">
+      <div class="tile-overlay">
+        <div class="tile-eyebrow"><span>Anthropology</span><span>◉ Trobriand Islands, Papua New Guinea</span></div>
+        <h2 class="tile-title">Participant Observation</h2>
+        <p class="tile-summary">The method that made anthropology a discipline rather than a literature — and the unresolved question of what it is, exactly, you are doing when you do it.</p>
+      </div>
+    </a>
+<a class="tile tile--tall reveal" href="pages/topics/silk-road-cities.html"
+      style="--tile-bg: url('assets/images/topics/silk-road-cities/hero.svg')"
       aria-label="The Silk Road's Forgotten Cities">
       <div class="tile-overlay">
         <div class="tile-eyebrow"><span>History</span><span>◉ Samarkand, Uzbekistan</span></div>
@@ -94,8 +265,17 @@
         <p class="tile-summary">Bukhara, Samarkand, Merv — once the wealthiest cities on earth, now half-buried, half-restored, half-still-there.</p>
       </div>
     </a>
-<a class="tile tile--tall reveal" href="pages/topics/yixing-clay.html"
-      style="--tile-bg: url('../assets/images/topics/yixing-clay/hero.svg')"
+<a class="tile tile--sm reveal" href="pages/topics/tea-processing.html"
+      style="--tile-bg: url('assets/images/topics/tea-processing/hero.svg')"
+      aria-label="How Processing Makes Six Teas">
+      <div class="tile-overlay">
+        <div class="tile-eyebrow"><span>Tea</span><span>◉ Wuyi Mountains, Fujian</span></div>
+        <h2 class="tile-title">How Processing Makes Six Teas</h2>
+        <p class="tile-summary">One leaf, six categories. The differences between green, white, yellow, oolong, black, and pu-erh tea are entirely about what you do — and don't do — to the leaf in the hours after picking.</p>
+      </div>
+    </a>
+<a class="tile tile--wide reveal" href="pages/topics/yixing-clay.html"
+      style="--tile-bg: url('assets/images/topics/yixing-clay/hero.svg')"
       aria-label="Yixing Clay">
       <div class="tile-overlay">
         <div class="tile-eyebrow"><span>Tea</span><span>◉ Yixing, Jiangsu, China</span></div>
@@ -103,16 +283,41 @@
         <p class="tile-summary">An iron-rich purple clay from one Chinese township that became the only material serious tea drinkers will use for a teapot.</p>
       </div>
     </a>
-  </div>
+    </div>
+  </section>
 </main>
 
 <footer class="site-footer">
   <div class="site-footer-inner">
     <span class="footer-mark">misbah · exploration</span>
     <span class="footer-meta">A personal atlas of topics worth a longer look.</span>
+    <span class="footer-links">
+      <a href="pages/atlas.html">Atlas</a>
+      <a href="pages/timeline.html">Timeline</a>
+      <a href="pages/tags.html">Tags</a>
+      <a href="feed.xml">RSS</a>
+    </span>
   </div>
 </footer>
 
-<script src="scripts/enhance.js?v=1" defer></script>
+<dialog class="search-palette" id="search-palette" aria-label="Search topics">
+  <form class="search-form" role="search" data-search-form>
+    <span class="search-icon" aria-hidden="true">⌕</span>
+    <input type="search" class="search-input" id="search-input" placeholder="Search topics, tags, places…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+    <kbd class="search-esc">esc</kbd>
+  </form>
+  <div class="search-results" id="search-results" role="listbox" aria-label="Search results"></div>
+  <footer class="search-foot">
+    <span><kbd>↑</kbd><kbd>↓</kbd> navigate</span>
+    <span><kbd>↵</kbd> open</span>
+    <span><kbd>esc</kbd> close</span>
+  </footer>
+</dialog>
+
+<script src="scripts/enhance.js?v=2" defer></script>
+<script>window.__MISBAH_BASE__ = "";</script>
+<script src="scripts/search.js?v=2" defer></script>
+<script src="scripts/toc.js?v=2" defer></script>
+<script src="scripts/sw-register.js?v=2" defer></script>
 </body>
 </html>

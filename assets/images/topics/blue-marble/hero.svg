@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+<defs>
+  <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#7a4a1a"/>
+    <stop offset="1" stop-color="#3a2208"/>
+  </linearGradient>
+  <radialGradient id="vignette" cx="0.5" cy="0.55" r="0.7">
+    <stop offset="0.6" stop-color="rgba(0,0,0,0)"/>
+    <stop offset="1" stop-color="rgba(0,0,0,0.5)"/>
+  </radialGradient>
+  <pattern id="grid" width="80" height="80" patternUnits="userSpaceOnUse">
+    <path d="M80 0 L0 0 0 80" fill="none" stroke="#c9a44a" stroke-opacity="0.06" stroke-width="0.5"/>
+  </pattern>
+</defs>
+<rect width="1600" height="900" fill="url(#g)"/>
+<rect width="1600" height="900" fill="url(#grid)"/>
+<circle cx="792" cy="592" r="100" fill="none" stroke="#c9a44a" stroke-opacity="0.05" stroke-width="1"/><circle cx="784" cy="624" r="164" fill="none" stroke="#c9a44a" stroke-opacity="0.09" stroke-width="2"/><circle cx="780" cy="612" r="212" fill="none" stroke="#c9a44a" stroke-opacity="0.13" stroke-width="3"/><circle cx="812" cy="660" r="280" fill="none" stroke="#c9a44a" stroke-opacity="0.05" stroke-width="1"/><circle cx="852" cy="632" r="328" fill="none" stroke="#c9a44a" stroke-opacity="0.09" stroke-width="2"/><circle cx="864" cy="660" r="400" fill="none" stroke="#c9a44a" stroke-opacity="0.13" stroke-width="3"/><circle cx="832" cy="552" r="448" fill="none" stroke="#c9a44a" stroke-opacity="0.05" stroke-width="1"/>
+<rect width="1600" height="900" fill="url(#vignette)"/>
+<g font-family="Fraunces, Georgia, serif" fill="#c9a44a" opacity="0.85">
+  <text x="80" y="820" font-size="84" font-weight="500" letter-spacing="-2">The Blue Marble</text>
+  <text x="80" y="120" font-size="22" letter-spacing="6" text-transform="uppercase" font-family="JetBrains Mono, monospace" fill-opacity="0.7">MISBAH · EXPLORATION</text>
+  <text x="1480" y="120" font-size="22" letter-spacing="6" font-family="JetBrains Mono, monospace" fill-opacity="0.55" text-anchor="end">TBM</text>
+</g>
+</svg>

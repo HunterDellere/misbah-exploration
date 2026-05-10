@@ -5,6 +5,8 @@ summary: An iron-rich purple clay from one Chinese township that became the only
 status: complete
 updated: 2026-05-10
 tags: [tea, china, craft, anthropology]
+pillar: tea
+order: 5
 geo:
   lat: 31.36
   lng: 119.82
