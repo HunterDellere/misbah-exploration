@@ -170,7 +170,9 @@ async function init() {
 
   if (searchInput) {
     searchInput.addEventListener('input', (e) => {
-      activeQuery = String(e.target.value || '').trim().toLowerCase();
+      activeQuery = String(e.target.value || '')
+        .trim()
+        .toLowerCase();
       applyFilters(data);
     });
   }
@@ -223,7 +225,8 @@ function mountGlobe(data) {
     .pointRadius(0.55)
     .pointColor((d) => PIN_COLORS[d.family] || PIN_COLORS.default)
     .pointLabel(
-      (d) => `<div style="font-family:'Inter Tight',sans-serif;background:#0e1726;color:#f4ecd8;padding:6px 10px;border-radius:6px;font-size:12px;border:1px solid #c9a44a"><strong>${escapeHTML(d.title)}</strong><br>${escapeHTML(d.place || '')}</div>`,
+      (d) =>
+        `<div style="font-family:'Inter Tight',sans-serif;background:#0e1726;color:#f4ecd8;padding:6px 10px;border-radius:6px;font-size:12px;border:1px solid #c9a44a"><strong>${escapeHTML(d.title)}</strong><br>${escapeHTML(d.place || '')}</div>`,
     )
     .onPointClick((d) => {
       showPreview(d);
@@ -232,9 +235,21 @@ function mountGlobe(data) {
     .pointsTransitionDuration(400)
     .pointsData(data);
 
-  const resize = () => world.width(stage.clientWidth).height(stage.clientHeight);
-  resize();
+  const resize = () => {
+    const w = stage.clientWidth;
+    const h = stage.clientHeight;
+    if (w > 0 && h > 0) world.width(w).height(h);
+  };
+  // Run on next frame to give layout a chance to settle, then again on
+  // first paint, plus listen for stage and viewport resizes.
+  requestAnimationFrame(() => {
+    resize();
+    requestAnimationFrame(resize);
+  });
   new ResizeObserver(resize).observe(stage);
+  window.addEventListener('resize', resize);
+  // Also resize once images/fonts settle, since header height can shift.
+  window.addEventListener('load', resize, { once: true });
 
   renderGlobe.update = (filtered) => world.pointsData(filtered);
 }
