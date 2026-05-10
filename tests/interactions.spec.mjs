@@ -138,13 +138,14 @@ test('tags: clicking a chip scrolls to its section', async ({ page }) => {
   expect(hash).toBe(href);
 });
 
-test('timeline: items render with positioned bars', async ({ page }) => {
+test('timeline: cards render and link to topics', async ({ page }) => {
   await page.goto('/pages/timeline.html');
-  const items = page.locator('.tl-item');
-  expect(await items.count()).toBeGreaterThan(15);
-  const first = items.first();
-  const left = await first.evaluate(el => el.style.left);
-  expect(left).toMatch(/%/);
+  const cards = page.locator('.tl-card');
+  expect(await cards.count()).toBeGreaterThan(15);
+  const href = await cards.first().getAttribute('href');
+  expect(href).toMatch(/topics\//);
+  // Era anchor sidebar should be present.
+  expect(await page.locator('.tl-anchor').count()).toBeGreaterThan(2);
 });
 
 test('rss feed is well-formed xml', async ({ page }) => {

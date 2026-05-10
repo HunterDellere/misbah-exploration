@@ -103,6 +103,7 @@ function showPreview(t) {
   previewSummary.textContent = t.summary || '';
   previewCta.href = '../' + t.url;
   previewEl.dataset.open = 'true';
+  previewEl.dataset.slug = t.slug;
 }
 
 function hidePreview() {
@@ -229,6 +230,13 @@ function mountGlobe(data) {
         `<div style="font-family:'Inter Tight',sans-serif;background:#0e1726;color:#f4ecd8;padding:6px 10px;border-radius:6px;font-size:12px;border:1px solid #c9a44a"><strong>${escapeHTML(d.title)}</strong><br>${escapeHTML(d.place || '')}</div>`,
     )
     .onPointClick((d) => {
+      // First tap: open preview + fly the globe to it.
+      // Second tap on the same pin: navigate.
+      const alreadyOpen = previewEl?.dataset.open === 'true' && previewEl?.dataset.slug === d.slug;
+      if (alreadyOpen) {
+        location.href = '../' + d.url;
+        return;
+      }
       showPreview(d);
       world.pointOfView({ lat: d.lat, lng: d.lng, altitude: 1.4 }, 800);
     })
@@ -307,7 +315,15 @@ function mount2D(data) {
       c.setAttribute('stroke', 'var(--ink)');
       c.setAttribute('stroke-width', '0.3');
       c.style.cursor = 'pointer';
-      c.addEventListener('click', () => showPreview(d));
+      c.addEventListener('click', () => {
+        const alreadyOpen =
+          previewEl?.dataset.open === 'true' && previewEl?.dataset.slug === d.slug;
+        if (alreadyOpen) {
+          location.href = '../' + d.url;
+          return;
+        }
+        showPreview(d);
+      });
       const title = document.createElementNS(svgNS, 'title');
       title.textContent = `${d.title} — ${d.place}`;
       c.appendChild(title);

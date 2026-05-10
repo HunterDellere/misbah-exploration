@@ -75,104 +75,85 @@ function eraEnd(t) {
   return Number(e);
 }
 
+// Vertical timeline grouped into wide eras, sorted most-recent-first.
+const ERA_BUCKETS = [
+  { id: 'now', label: 'Now & the recent past', sub: '2000 → present', from: 2000, to: Infinity },
+  { id: 'twentieth', label: 'The twentieth century', sub: '1900 — 2000', from: 1900, to: 2000 },
+  { id: 'modern', label: 'The long nineteenth', sub: '1800 — 1900', from: 1800, to: 1900 },
+  { id: 'early-modern', label: 'Early modern', sub: '1500 — 1800', from: 1500, to: 1800 },
+  { id: 'medieval', label: 'The middle centuries', sub: '500 — 1500', from: 500, to: 1500 },
+  { id: 'classical', label: 'Antiquity', sub: '500 BCE — 500 CE', from: -500, to: 500 },
+  { id: 'ancient', label: 'Deep past', sub: 'before 500 BCE', from: -Infinity, to: -500 },
+];
+
+function bucketFor(start) {
+  for (const b of ERA_BUCKETS) {
+    if (start >= b.from && start < b.to) return b;
+  }
+  return ERA_BUCKETS[ERA_BUCKETS.length - 1];
+}
+
 export function renderTimelinePage(topics) {
   const dated = topics.filter((t) => t.era?.start != null);
   if (dated.length === 0) {
     return `<main class="timeline-page"><p>No dated topics yet.</p></main>`;
   }
 
+  // Anchor: prefer era end (the topic's most-recent presence), break ties by
+  // era start (older origins first within a bucket — "this began earlier
+  // even though it persists today" reads naturally top-down).
+  const sorted = [...dated].sort((a, b) => {
+    const ea = eraEnd(a);
+    const eb = eraEnd(b);
+    if (eb !== ea) return eb - ea;
+    return Number(a.era.start) - Number(b.era.start);
+  });
+
+  // Bucket by the most recent era end — a topic spanning antiquity to
+  // present still belongs near "Now" because that's where the story is most
+  // alive.
+  const groups = new Map(ERA_BUCKETS.map((b) => [b.id, []]));
+  for (const t of sorted) groups.get(bucketFor(eraEnd(t)).id).push(t);
+
   const minStart = Math.min(...dated.map((t) => Number(t.era.start)));
   const maxEnd = Math.max(...dated.map(eraEnd));
-  const span = Math.max(1, maxEnd - minStart);
 
-  // Group by family lane.
-  const laneOrder = [
-    'history',
-    'cartography',
-    'science',
-    'travel',
-    'anthropology',
-    'tea',
-    'craft',
-    'food',
-    'experience',
-    'vietnam',
-    'default',
-  ];
-  const families = new Map();
-  for (const t of dated) {
-    const fam = familyFor(t);
-    if (!families.has(fam.key)) {
-      families.set(fam.key, { key: fam.key, label: fam.label, color: fam.color, items: [] });
-    }
-    families.get(fam.key).items.push(t);
-  }
-  const lanes = [...families.values()].sort(
-    (a, b) => laneOrder.indexOf(a.key) - laneOrder.indexOf(b.key),
-  );
-  // Sort items inside each lane by start.
-  for (const l of lanes) l.items.sort((a, b) => Number(a.era.start) - Number(b.era.start));
-
-  const tickStep = chooseTickStep(span);
-  const ticks = [];
-  let firstTick = Math.ceil(minStart / tickStep) * tickStep;
-  for (let v = firstTick; v <= maxEnd; v += tickStep) {
-    const pos = ((v - minStart) / span) * 100;
-    ticks.push(
-      `<span class="tl-tick" style="left:${pos.toFixed(2)}%">
-        <span class="tl-tick-line" aria-hidden="true"></span>
-        <span class="tl-tick-label">${escapeHtml(formatYear(v))}</span>
-      </span>`,
-    );
-  }
-
-  // "Now" marker if range includes present-day.
-  const showNow = maxEnd >= 2020 && minStart < 2020;
-  const nowPos = showNow ? (((2025 - minStart) / span) * 100).toFixed(2) : null;
-
-  const laneRows = lanes
-    .map((l) => {
-      // Pack items into sub-rows within the lane to avoid overlap.
-      const subRows = packLane(l.items, minStart, span);
-      const laneHeight = Math.max(1, subRows.length) * 40 + 16;
-      const itemsHtml = subRows
-        .flatMap((row, idx) =>
-          row.map((t) => {
-            const start = Number(t.era.start);
-            const end = eraEnd(t);
-            const pos = ((start - minStart) / span) * 100;
-            const width = Math.max(1.5, ((end - start) / span) * 100);
-            const isPoint = end - start <= span / 200;
-            return `<a class="tl-item ${isPoint ? 'tl-item--point' : ''}" href="topics/${escapeAttr(t.slug)}.html"
-              style="left:${pos.toFixed(2)}%; width:${width.toFixed(2)}%; top:${idx * 40 + 8}px;"
-              data-family="${escapeAttr(l.color)}"
-              title="${escapeAttr(t.title)} · ${escapeAttr(formatEra(t.era))}">
-              <span class="tl-item-dot" aria-hidden="true"></span>
-              <span class="tl-item-title">${escapeHtml(t.title)}</span>
-              <span class="tl-item-era">${escapeHtml(formatEra(t.era))}</span>
-            </a>`;
-          }),
-        )
+  const sections = ERA_BUCKETS.filter((b) => groups.get(b.id).length > 0)
+    .map((b) => {
+      const items = groups
+        .get(b.id)
+        .map((t) => renderTimelineItem(t))
         .join('\n');
-      return `<div class="tl-lane" data-family="${escapeAttr(l.color)}">
-          <div class="tl-lane-label">
-            <span class="tl-lane-swatch" style="background: var(--topic-${l.color})" aria-hidden="true"></span>
-            <span>${escapeHtml(l.label)}</span>
-            <span class="tl-lane-count">${l.items.length}</span>
-          </div>
-          <div class="tl-lane-track" style="height:${laneHeight}px">
-            ${itemsHtml}
-          </div>
-        </div>`;
+      return `<section class="tl-era" id="era-${escapeAttr(b.id)}" aria-labelledby="era-${escapeAttr(b.id)}-h">
+          <header class="tl-era-header">
+            <span class="tl-era-marker" aria-hidden="true"></span>
+            <div class="tl-era-text">
+              <span class="tl-era-eyebrow">${escapeHtml(b.sub)}</span>
+              <h2 class="tl-era-title" id="era-${escapeAttr(b.id)}-h">${escapeHtml(b.label)}</h2>
+              <span class="tl-era-count">${groups.get(b.id).length} ${groups.get(b.id).length === 1 ? 'topic' : 'topics'}</span>
+            </div>
+          </header>
+          <div class="tl-era-items">${items}</div>
+        </section>`;
     })
     .join('\n');
+
+  // Anchor strip — quick jump between era buckets.
+  const anchors = ERA_BUCKETS.filter((b) => groups.get(b.id).length > 0)
+    .map(
+      (b) => `<a class="tl-anchor" href="#era-${escapeAttr(b.id)}">
+          <span class="tl-anchor-label">${escapeHtml(b.label)}</span>
+          <span class="tl-anchor-meta">${escapeHtml(b.sub)} · ${groups.get(b.id).length}</span>
+        </a>`,
+    )
+    .join('');
 
   return `
 <header class="index-hero index-hero--tight">
   <div class="index-hero-inner">
     <div class="index-hero-eyebrow">Index</div>
     <h1 class="index-hero-title">Timeline</h1>
-    <p class="index-hero-sub">${dated.length} topics anchored in time, from ${escapeHtml(formatYear(minStart))} to ${escapeHtml(formatYear(maxEnd))}. Lanes group by family. Drag horizontally to scan.</p>
+    <p class="index-hero-sub">${dated.length} topics anchored in time, ordered from now backward to ${escapeHtml(formatYear(minStart))}. Stories that are still alive sit at the top.</p>
   </div>
 </header>
 <nav class="breadcrumbs" aria-label="Breadcrumb">
@@ -180,48 +161,43 @@ export function renderTimelinePage(topics) {
   <span class="breadcrumb-sep" aria-hidden="true">›</span>
   <span aria-current="page">Timeline</span>
 </nav>
-<main id="main-content" class="tl-page">
-  <div class="tl-scroll">
-    <div class="tl-grid">
-      <div class="tl-axis-spacer" aria-hidden="true"></div>
-      <div class="tl-axis">
-        ${ticks.join('')}
-        ${showNow ? `<span class="tl-now" style="left:${nowPos}%" aria-hidden="true"><span class="tl-now-line"></span><span class="tl-now-label">now</span></span>` : ''}
-      </div>
-      ${laneRows}
-    </div>
+<main id="main-content" class="tl-page tl-page--vertical">
+  <nav class="tl-anchors" aria-label="Jump to era">${anchors}</nav>
+  <div class="tl-river">
+    <div class="tl-spine" aria-hidden="true"></div>
+    ${sections}
+    <footer class="tl-river-end">
+      <span class="tl-river-end-marker" aria-hidden="true"></span>
+      <span class="tl-river-end-label">${escapeHtml(formatYear(minStart))}</span>
+    </footer>
   </div>
 </main>`;
 }
 
-// Greedy packing: each item placed in the first sub-row whose last item ends
-// before this one starts (with a small gutter). Returns array of sub-row
-// arrays.
-function packLane(items, minStart, span) {
-  const gutter = span / 80; // ~1.25% breathing room
-  const rows = [];
-  for (const t of items) {
-    const start = Number(t.era.start);
-    const end = eraEnd(t);
-    let placed = false;
-    for (const row of rows) {
-      const last = row[row.length - 1];
-      if (eraEnd(last) + gutter <= start) {
-        row.push(t);
-        placed = true;
-        break;
-      }
-    }
-    if (!placed) rows.push([t]);
-  }
-  return rows;
+function renderTimelineItem(t) {
+  const fam = familyFor(t);
+  const img = (t.images || []).find((i) => i.role === 'hero') || (t.images || [])[0];
+  const thumb = img ? `../assets/images/topics/${t.slug}/${img.src}` : '';
+  const place = t.geo?.place ? `<span class="tl-card-place">◉ ${escapeHtml(t.geo.place)}</span>` : '';
+  const era = formatEra(t.era);
+  return `<a class="tl-card" href="topics/${escapeAttr(t.slug)}.html"
+        data-family="${escapeAttr(fam.color)}">
+        <div class="tl-card-node" aria-hidden="true"><span class="tl-card-node-dot"></span></div>
+        <div class="tl-card-era">
+          <span class="tl-card-era-pill">${escapeHtml(era)}</span>
+        </div>
+        ${thumb ? `<div class="tl-card-thumb" style="background-image:url('${escapeAttr(thumb)}')" aria-hidden="true"></div>` : '<div class="tl-card-thumb tl-card-thumb--empty" aria-hidden="true"></div>'}
+        <div class="tl-card-body">
+          <div class="tl-card-meta">
+            <span class="tl-card-fam" style="--fam-color: var(--topic-${fam.color})">${escapeHtml(fam.label)}</span>
+            ${place}
+          </div>
+          <h3 class="tl-card-title">${escapeHtml(t.title)}</h3>
+          ${t.summary ? `<p class="tl-card-summary">${escapeHtml(t.summary)}</p>` : ''}
+        </div>
+      </a>`;
 }
 
-function chooseTickStep(span) {
-  const candidates = [50, 100, 200, 500, 1000, 2000];
-  for (const c of candidates) if (span / c < 12) return c;
-  return 5000;
-}
 function formatYear(v) {
   if (v < 0) return `${Math.abs(v)} BCE`;
   if (v >= 2025) return 'now';

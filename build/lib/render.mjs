@@ -314,13 +314,57 @@ function pickTileSize(idx) {
 }
 
 export function renderHomeMosaic(topics, pillars = []) {
-  const sorted = [...topics].sort((a, b) => {
+  const featuredFirst = [...topics].sort((a, b) => {
     if ((b.featured ? 1 : 0) - (a.featured ? 1 : 0)) return (b.featured ? 1 : 0) - (a.featured ? 1 : 0);
     if (a.updated && b.updated) return String(b.updated).localeCompare(String(a.updated));
     return a.title.localeCompare(b.title);
   });
 
-  const tiles = sorted.map((t, idx) => {
+  // Above-the-fold spotlight: up to 4 picks. Prefer explicitly `featured: true`
+  // first, then most recently updated. Always at least one card so the fold
+  // is never empty.
+  const spotlightPool = featuredFirst.filter((t) => t.images && t.images.length);
+  const spotlight = spotlightPool.slice(0, 4);
+  const spotlightSlugs = new Set(spotlight.map((t) => t.slug));
+
+  // Recently updated band — newest 6, excluding spotlight, with covers.
+  const recent = [...topics]
+    .filter((t) => !spotlightSlugs.has(t.slug) && t.images && t.images.length)
+    .sort((a, b) => String(b.updated || '').localeCompare(String(a.updated || '')))
+    .slice(0, 6);
+
+  // Pick a place-rich byline for spotlight cards.
+  const spotlightCards = spotlight.map((t, idx) => {
+    const fam = familyFor(t);
+    const img = (t.images || []).find((i) => i.role === 'hero') || (t.images || [])[0];
+    const src = img ? `assets/images/topics/${t.slug}/${img.src}` : '';
+    const place = t.geo?.place ? `<span>◉ ${escapeHtml(t.geo.place)}</span>` : '';
+    return `<a class="spot-card spot-card--${idx === 0 ? 'lead' : 'sub'}" href="pages/topics/${escapeAttr(t.slug)}.html"
+        style="--spot-bg: url('${escapeAttr(src)}')"
+        aria-label="${escapeAttr(t.title)}">
+        <div class="spot-card-overlay">
+          <div class="spot-card-eyebrow"><span>${escapeHtml(fam.label)}</span>${place}</div>
+          <h3 class="spot-card-title">${escapeHtml(t.title)}</h3>
+          ${t.summary ? `<p class="spot-card-summary">${escapeHtml(t.summary)}</p>` : ''}
+          <span class="spot-card-cta">Read →</span>
+        </div>
+      </a>`;
+  }).join('\n');
+
+  const recentCards = recent.map((t) => {
+    const fam = familyFor(t);
+    const img = (t.images || []).find((i) => i.role === 'hero') || (t.images || [])[0];
+    const src = img ? `assets/images/topics/${t.slug}/${img.src}` : '';
+    return `<a class="recent-card" href="pages/topics/${escapeAttr(t.slug)}.html">
+        <div class="recent-card-thumb" style="background-image:url('${escapeAttr(src)}')" aria-hidden="true"></div>
+        <div class="recent-card-body">
+          <div class="recent-card-eyebrow">${escapeHtml(fam.label)}${t.geo?.place ? ` · ${escapeHtml(t.geo.place)}` : ''}</div>
+          <h3 class="recent-card-title">${escapeHtml(t.title)}</h3>
+        </div>
+      </a>`;
+  }).join('\n');
+
+  const tiles = featuredFirst.map((t, idx) => {
     const fam = familyFor(t);
     const img = (t.images || []).find(i => i.role === 'hero') || (t.images || [])[0];
     const src = img ? `assets/images/topics/${t.slug}/${img.src}` : '';
@@ -342,7 +386,12 @@ export function renderHomeMosaic(topics, pillars = []) {
   const pillarStrip = pillars.length ? `
   <section class="pillar-strip" aria-label="Pillars">
     <div class="pillar-strip-inner">
-      <div class="pillar-strip-eyebrow">Pillars</div>
+      <div class="section-header">
+        <div>
+          <div class="pillar-strip-eyebrow">The four pillars</div>
+          <h2 class="section-title">Long arcs, read in order</h2>
+        </div>
+      </div>
       <div class="pillar-strip-grid">
         ${pillars.map(p => `<a class="pillar-card pillar-card--${p.hue || 'default'}" href="pages/pillars/${escapeAttr(p.slug)}.html">
           <div class="pillar-card-eyebrow">${p.count} essay${p.count === 1 ? '' : 's'}</div>
@@ -356,35 +405,58 @@ export function renderHomeMosaic(topics, pillars = []) {
 
   return `
 <main id="main-content" class="home">
-  <header class="home-hero">
-    <div>
+  <header class="home-hero home-hero--compact">
+    <div class="home-hero-text">
+      <div class="home-hero-eyebrow">${topics.length} topics · ${pillars.length} pillars · curated by Hunter Dellere</div>
       <h1 class="home-hero-title">An atlas of <em>things worth a longer look</em>.</h1>
-      <p class="home-hero-sub">A personal collection — tea, anthropology, travel, history, craft, cartography, and what I happened to find absorbing along the way.</p>
-      <div class="home-hero-shortcuts">
-        <button type="button" class="home-shortcut" data-search-trigger>
-          <span class="home-shortcut-icon" aria-hidden="true">⌕</span>
-          <span class="home-shortcut-label">Search topics</span>
-          <span class="home-shortcut-key" aria-hidden="true"><kbd>⌘</kbd><kbd>K</kbd></span>
-        </button>
-        <a class="home-shortcut" href="pages/atlas.html">
-          <span class="home-shortcut-icon" aria-hidden="true">◉</span>
-          <span class="home-shortcut-label">Open the atlas</span>
-        </a>
-        <a class="home-shortcut" href="pages/timeline.html">
-          <span class="home-shortcut-icon" aria-hidden="true">═</span>
-          <span class="home-shortcut-label">Timeline</span>
-        </a>
+      <p class="home-hero-sub">Tea, anthropology, cartography, Vietnam, and whatever else turned out to repay a slow read. Updated when something deserves it.</p>
+      <form class="home-search" data-search-form-home role="search" aria-label="Search the atlas">
+        <span class="home-search-icon" aria-hidden="true">⌕</span>
+        <input type="search" class="home-search-input" data-search-trigger placeholder="Search topics, tags, places…" autocomplete="off" aria-label="Search">
+        <span class="home-search-key" aria-hidden="true"><kbd>⌘</kbd><kbd>K</kbd></span>
+      </form>
+      <div class="home-hero-links">
+        <a class="home-hero-link" href="pages/atlas.html"><span aria-hidden="true">◉</span> Open the atlas</a>
+        <a class="home-hero-link" href="pages/timeline.html"><span aria-hidden="true">═</span> Timeline</a>
+        <a class="home-hero-link" href="pages/tags.html"><span aria-hidden="true">#</span> Tags</a>
+        <a class="home-hero-link" href="random.html"><span aria-hidden="true">↻</span> Random topic</a>
       </div>
     </div>
-    <aside class="home-hero-aside">
-      ${topics.length} topic${topics.length === 1 ? '' : 's'} · ${pillars.length} pillar${pillars.length === 1 ? '' : 's'}<br>
-      curated by Hunter Dellere
-    </aside>
   </header>
-  ${pillarStrip}
-  <section class="mosaic-section">
+
+  ${spotlight.length ? `<section class="spotlight" aria-label="Featured">
     <header class="section-header">
-      <h2 class="section-title">All topics</h2>
+      <div>
+        <div class="section-eyebrow">Start here</div>
+        <h2 class="section-title">Featured</h2>
+      </div>
+      <a class="section-cta" href="#all-topics">All ${topics.length} topics ↓</a>
+    </header>
+    <div class="spotlight-grid">
+      ${spotlightCards}
+    </div>
+  </section>` : ''}
+
+  ${recent.length ? `<section class="recent-band" aria-label="Recently updated">
+    <header class="section-header">
+      <div>
+        <div class="section-eyebrow">Just added</div>
+        <h2 class="section-title">Recently updated</h2>
+      </div>
+    </header>
+    <div class="recent-grid">
+      ${recentCards}
+    </div>
+  </section>` : ''}
+
+  ${pillarStrip}
+
+  <section class="mosaic-section" id="all-topics">
+    <header class="section-header">
+      <div>
+        <div class="section-eyebrow">Browse</div>
+        <h2 class="section-title">All ${topics.length} topics</h2>
+      </div>
       <a class="section-cta" href="pages/tags.html">Browse by tag →</a>
     </header>
     <div class="mosaic">
