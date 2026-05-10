@@ -19,9 +19,9 @@ images:
   - src: hero.jpg
     role: hero
     source: external
-    credit: "Wikimedia Commons — Marshman"
-    license: "CC BY-SA 3.0"
-    url: https://commons.wikimedia.org/wiki/File:Tea_leaves_oxidation.jpg
+    credit: "Wikimedia Commons — shankar s. from Dubai, united arab emirates"
+    license: "CC BY 2.0"
+    url: https://commons.wikimedia.org/wiki/File:Fresh_tea_leaves_go_through_the_%27withering%27_process_(7353748710).jpg
 related: [camellia-sinensis, gongfu-cha, japanese-tea-ceremony]
 sources:
   - title: "Tea: A Global History — Helen Saberi"

@@ -19,9 +19,9 @@ images:
   - src: hero.jpg
     role: hero
     source: external
-    credit: "Wikimedia Commons — Smithsonian"
-    license: "Public Domain"
-    url: https://commons.wikimedia.org/wiki/File:Smithsonian_Bureau_of_American_Ethnology.jpg
+    credit: "Wikimedia Commons — Bioanthropologist1"
+    license: "CC BY-SA 4.0"
+    url: https://commons.wikimedia.org/wiki/File:Early_anti-racist_scholars_in_anthropology,_especially_biological_anthropology.jpg
 related: [origins-of-anthropology, participant-observation, kinship-and-structuralism]
 sources:
   - title: "Anthropology and the Public Interest — Peggy Reeves Sanday"

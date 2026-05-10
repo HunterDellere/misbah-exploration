@@ -18,9 +18,9 @@ images:
   - src: hero.jpg
     role: hero
     source: external
-    credit: "Wikimedia Commons — Daderot"
-    license: "Public Domain (CC0)"
-    url: https://commons.wikimedia.org/wiki/File:Cap_made_from_byssus_-_Boston_Museum_of_Fine_Arts_-_DSC07843.JPG
+    credit: "Wikimedia Commons — John Hill"
+    license: "CC BY-SA 3.0"
+    url: https://commons.wikimedia.org/wiki/File:Fine_sea_silk_threads.JPG
 related: [yixing-clay]
 sources:
   - title: "The Last Sea Silk Seamstress — BBC"

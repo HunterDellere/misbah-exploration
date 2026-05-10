@@ -20,9 +20,9 @@ images:
   - src: hero.jpg
     role: hero
     source: external
-    credit: "Wikimedia Commons — Manhhai (Flickr)"
+    credit: "Wikimedia Commons — Jorge Láscar from Australia"
     license: "CC BY 2.0"
-    url: https://commons.wikimedia.org/wiki/File:Hanoi_Opera_House_(1900s).jpg
+    url: https://commons.wikimedia.org/wiki/File:Lascar_Hanoi_Opera_House_(4550405849).jpg
 related: [vietnam-before-the-colonizers, the-vietnam-wars, vietnamese-food-and-coffee]
 sources:
   - title: "The Penguin History of Modern Vietnam — Christopher Goscha"

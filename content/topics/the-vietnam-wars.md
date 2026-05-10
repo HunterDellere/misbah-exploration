@@ -20,9 +20,9 @@ images:
   - src: hero.jpg
     role: hero
     source: external
-    credit: "Wikimedia Commons — manhhai (Flickr)"
-    license: "CC BY 2.0"
-    url: https://commons.wikimedia.org/wiki/File:Vietnam_War_-_Operation_Hastings_(1966).jpg
+    credit: "Wikimedia Commons — Sarahoulman"
+    license: "CC0"
+    url: https://commons.wikimedia.org/wiki/File:Vietnam_War_Memorial_and_Huey_helicopter.jpg
 related: [french-indochina, doi-moi-and-reunification, contemporary-vietnam]
 sources:
   - title: "Vietnam: An Epic Tragedy, 1945-1975 — Max Hastings"

@@ -19,9 +19,9 @@ images:
   - src: hero.jpg
     role: hero
     source: external
-    credit: "Wikimedia Commons — 663highland"
-    license: "CC BY-SA 3.0"
-    url: https://commons.wikimedia.org/wiki/File:Sen_no_Riky%C5%AB_JPN.jpg
+    credit: "Wikimedia Commons — D-Kuru"
+    license: "CC BY-SA 4.0"
+    url: https://commons.wikimedia.org/wiki/File:Japanese_garden_at_Sch%C3%B6nbrunn_Palace_in_Vienna,_Austria_-_teahouse_Heterotopia_tea_ceremony-whisk_PNr%C2%B01027.jpg
 related: [camellia-sinensis, tea-processing, gongfu-cha]
 sources:
   - title: "The Book of Tea — Kakuzō Okakura"

@@ -19,9 +19,9 @@ images:
   - src: hero.jpg
     role: hero
     source: external
-    credit: "Wikimedia Commons — Diego Delso"
-    license: "CC BY-SA 4.0"
-    url: https://commons.wikimedia.org/wiki/File:Hanoi,_Vietnam,_2013-08-21,_DD_25.jpg
+    credit: "Wikimedia Commons — Andrea"
+    license: "CC BY 2.0"
+    url: https://commons.wikimedia.org/wiki/File:Hanoi_traffic_sentinel_Flickr.jpg
 related: [the-vietnam-wars, contemporary-vietnam, vietnamese-food-and-coffee]
 sources:
   - title: "The Penguin History of Modern Vietnam — Christopher Goscha"

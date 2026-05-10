@@ -19,9 +19,9 @@ images:
   - src: hero.jpg
     role: hero
     source: external
-    credit: "Wikimedia Commons — University of California"
-    license: "CC BY-SA 4.0"
-    url: https://commons.wikimedia.org/wiki/File:UC_Berkeley_campus.jpg
+    credit: "Wikimedia Commons — Quintin Soloviev"
+    license: "CC BY 4.0"
+    url: https://commons.wikimedia.org/wiki/File:University_of_California_Berkeley_aerial_view_by_drone.jpg
 related: [origins-of-anthropology, kinship-and-structuralism, four-fields]
 sources:
   - title: "Anthropology and the Colonial Encounter — Talal Asad (ed.)"

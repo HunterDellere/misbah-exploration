@@ -19,9 +19,9 @@ images:
   - src: hero.jpg
     role: hero
     source: external
-    credit: "Wikimedia Commons — LSE Library"
-    license: "Public Domain"
-    url: https://commons.wikimedia.org/wiki/File:Bronislaw_Malinowski_among_Trobriand_tribe_3.jpg
+    credit: "Wikimedia Commons — Unknown (maybe Stanisław Ignacy Witkiewicz, 1885-1939)"
+    license: "Public domain"
+    url: https://commons.wikimedia.org/wiki/File:Bronis%C5%82aw_Malinowski_among_Trobriand_tribe.jpg
 related: [origins-of-anthropology, four-fields, kinship-and-structuralism]
 sources:
   - title: "Argonauts of the Western Pacific — Bronisław Malinowski"

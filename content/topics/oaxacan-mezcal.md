@@ -18,9 +18,9 @@ images:
   - src: hero.jpg
     role: hero
     source: external
-    credit: "Wikimedia Commons — AlejandroLinaresGarcia"
+    credit: "Wikimedia Commons — Polo Sanchez"
     license: "CC BY-SA 4.0"
-    url: https://commons.wikimedia.org/wiki/File:MezcalProductionOaxaca.jpg
+    url: https://commons.wikimedia.org/wiki/File:Mezcal_in_Oaxaca,_Mexico.jpg
 related: [sea-silk]
 sources:
   - title: "Holy Smoke! It's Mezcal! — John P. Schmal"

@@ -20,9 +20,9 @@ images:
   - src: hero.jpg
     role: hero
     source: external
-    credit: "Wikimedia Commons — Sam Cheong"
-    license: "CC BY-SA 4.0"
-    url: https://commons.wikimedia.org/wiki/File:Pho_(beef_noodle_soup).jpg
+    credit: "Wikimedia Commons — David McKelvey from Brisbane, Australia"
+    license: "CC BY 2.0"
+    url: https://commons.wikimedia.org/wiki/File:Pho_ga_(noodle_soup_with_chicken),_Hanoi_(6945821707).jpg
 related: [french-indochina, doi-moi-and-reunification, contemporary-vietnam, tea-and-empire]
 sources:
   - title: "The Pho Cookbook — Andrea Nguyen"

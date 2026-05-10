@@ -17,9 +17,9 @@ images:
   - src: hero.jpg
     role: hero
     source: external
-    credit: "Wikimedia Commons — Adam Jones"
-    license: "CC BY-SA 3.0"
-    url: https://commons.wikimedia.org/wiki/File:Registan_Square_-_Samarkand_-_Uzbekistan_(7551210512).jpg
+    credit: "Wikimedia Commons — Stomac"
+    license: "CC BY-SA 2.0 fr"
+    url: https://commons.wikimedia.org/wiki/File:Registan_Samarkand_Uzbekistan.JPG
 related: [oaxacan-mezcal]
 sources:
   - title: "The Silk Roads — Peter Frankopan"

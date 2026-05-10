@@ -20,9 +20,9 @@ images:
   - src: hero.jpg
     role: hero
     source: external
-    credit: "Wikimedia Commons — kallerna"
-    license: "CC BY-SA 4.0"
-    url: https://commons.wikimedia.org/wiki/File:Saigon_skyline_2017.jpg
+    credit: "Wikimedia Commons — Jim 陳"
+    license: "CC BY-SA 2.0"
+    url: https://commons.wikimedia.org/wiki/File:Ho_Chi_Minh_City_Skyline_(night).jpg
 related: [doi-moi-and-reunification, the-vietnam-wars, vietnamese-food-and-coffee]
 sources:
   - title: "Vietnam Country Profile — World Bank (2024)"

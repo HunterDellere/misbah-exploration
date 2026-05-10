@@ -20,9 +20,9 @@ images:
   - src: hero.jpg
     role: hero
     source: external
-    credit: "Wikimedia Commons — Diego Delso"
-    license: "CC BY-SA 4.0"
-    url: https://commons.wikimedia.org/wiki/File:Hai_Van_Pass,_Vietnam,_2015-08-23,_DD_18.jpg
+    credit: "Wikimedia Commons — David McKelvey from Brisbane, Australia"
+    license: "CC BY 2.0"
+    url: https://commons.wikimedia.org/wiki/File:The_Hai_Van_Gate,_H%E1%BA%A3i_V%C3%A2n_Pass_(%22ocean_cloud_pass%22),_Vietnam_(7090613449).jpg
 related: [vietnam-before-the-colonizers, the-vietnam-wars, contemporary-vietnam]
 sources:
   - title: "A History of the Vietnamese — K.W. Taylor"

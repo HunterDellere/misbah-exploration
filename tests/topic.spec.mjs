@@ -3,7 +3,7 @@ import { test, expect } from './_fixtures.mjs';
 test('topic page: hero, attribution, body, breadcrumbs', async ({ page }) => {
   await page.goto('/pages/topics/gongfu-cha.html');
   await expect(page.locator('.topic-hero-title')).toHaveText(/Gongfu Cha/i);
-  await expect(page.locator('.topic-hero-attrib')).toContainText(/Pexels/i);
+  await expect(page.locator('.topic-hero-attrib')).toContainText(/Wikimedia/i);
   await expect(page.locator('.topic-body p').first()).not.toBeEmpty();
   await expect(page.locator('.breadcrumbs')).toContainText(/Tea/);
 });

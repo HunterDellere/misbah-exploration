@@ -19,9 +19,9 @@ images:
   - src: hero.jpg
     role: hero
     source: external
-    credit: "Wikimedia Commons — UNESCO archives"
-    license: "CC BY-SA 3.0 IGO"
-    url: https://commons.wikimedia.org/wiki/File:Claude_L%C3%A9vi-Strauss_au_Coll%C3%A8ge_de_France.jpg
+    credit: "Wikimedia Commons — Mbzt"
+    license: "CC BY-SA 4.0"
+    url: https://commons.wikimedia.org/wiki/File:F4402_Paris_13_promenade_Claude_Levi-Strauss_rwk.jpg
 related: [origins-of-anthropology, participant-observation, four-fields]
 sources:
   - title: "The Elementary Structures of Kinship — Claude Lévi-Strauss"

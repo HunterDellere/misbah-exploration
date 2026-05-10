@@ -20,9 +20,9 @@ images:
   - src: hero.jpg
     role: hero
     source: external
-    credit: "Wikimedia Commons — Köhler's Medizinal-Pflanzen"
-    license: "Public Domain"
-    url: https://commons.wikimedia.org/wiki/File:K%C3%B6hler%27s_Medizinal-Pflanzen-027.jpg
+    credit: "Wikimedia Commons — MilicaS9"
+    license: "CC BY-SA 4.0"
+    url: https://commons.wikimedia.org/wiki/File:Camellia_sinensis-%C4%8Daj.jpg
 related: [gongfu-cha, yixing-clay, tea-and-empire, tea-processing]
 sources:
   - title: "The True History of Tea — Mair & Hoh"

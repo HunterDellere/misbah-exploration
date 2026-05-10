@@ -19,9 +19,9 @@ images:
   - src: hero.jpg
     role: hero
     source: external
-    credit: "Wikimedia Commons — Daderot"
-    license: "CC0 / Public Domain"
-    url: https://commons.wikimedia.org/wiki/File:My_Son_Sanctuary,_Vietnam_(2).jpg
+    credit: "Wikimedia Commons — Philip Nalangan"
+    license: "CC BY 4.0"
+    url: https://commons.wikimedia.org/wiki/File:My_Son_Sanctuary_Vietnam_07.jpg
 related: [vietnam-the-shape-of-the-country, french-indochina, the-vietnam-wars]
 sources:
   - title: "A History of the Vietnamese — K.W. Taylor"

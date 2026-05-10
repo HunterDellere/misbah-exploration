@@ -20,9 +20,9 @@ images:
   - src: hero.jpg
     role: hero
     source: external
-    credit: "Cosmin Iftode (Pexels)"
-    license: "Pexels License"
-    url: https://www.pexels.com/photo/teapot-near-cup-1417945/
+    credit: "Wikimedia Commons — Neptunati"
+    license: "Public domain"
+    url: https://commons.wikimedia.org/wiki/File:Gong_fu_cha.jpg
 related: [yixing-clay]
 sources:
   - title: "All the Tea in China — Kit Chow & Ione Kramer"
