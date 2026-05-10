@@ -148,6 +148,55 @@ test('timeline: cards render and link to topics', async ({ page }) => {
   expect(await page.locator('.tl-anchor').count()).toBeGreaterThan(2);
 });
 
+test('timeline: vertical layout — present bookend, spine, progress fill', async ({ page }) => {
+  await page.goto('/pages/timeline.html');
+  await expect(page.locator('.tl-river-start')).toHaveCount(1);
+  await expect(page.locator('.tl-river-start-label')).toHaveText(/Present/i);
+  await expect(page.locator('.tl-spine')).toHaveCount(1);
+  await expect(page.locator('.tl-spine-fill')).toHaveCount(1);
+  await expect(page.locator('.tl-river-end-label')).toBeVisible();
+});
+
+test('timeline: cards reveal on scroll and spine fill advances', async ({ page }) => {
+  await page.goto('/pages/timeline.html');
+  // First card is in-view on load and should be revealed
+  const first = page.locator('.tl-card--reveal').first();
+  await expect(first).toHaveClass(/is-in/);
+  // Scroll into the middle; spine fill should report a non-zero progress
+  await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight / 2));
+  await page.waitForTimeout(150);
+  const pct = await page.evaluate(() => {
+    const el = document.querySelector('.tl-spine-fill');
+    return el ? el.style.getPropertyValue('--tl-progress') : '';
+  });
+  expect(pct).toMatch(/\d/);
+  expect(parseFloat(pct)).toBeGreaterThan(0);
+});
+
+test('timeline: active era anchor highlights as you scroll', async ({ page }) => {
+  await page.goto('/pages/timeline.html');
+  // The first era should be marked active immediately
+  await expect(page.locator('.tl-anchor.is-active')).toHaveCount(1);
+  const firstActive = await page
+    .locator('.tl-anchor.is-active')
+    .getAttribute('data-era');
+  expect(firstActive).toBeTruthy();
+
+  // Scroll near the bottom of the river and confirm the active anchor
+  // has advanced past the first era. IO + rAF coordination can lag
+  // under parallel test load, so poll briefly.
+  await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight - 400));
+  await expect
+    .poll(
+      async () =>
+        page
+          .locator('.tl-anchor.is-active')
+          .getAttribute('data-era'),
+      { timeout: 3000 },
+    )
+    .not.toBe(firstActive);
+});
+
 test('rss feed is well-formed xml', async ({ page }) => {
   const r = await page.request.get('/feed.xml');
   expect(r.ok()).toBe(true);

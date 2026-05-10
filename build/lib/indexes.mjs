@@ -124,7 +124,7 @@ export function renderTimelinePage(topics) {
         .get(b.id)
         .map((t) => renderTimelineItem(t))
         .join('\n');
-      return `<section class="tl-era" id="era-${escapeAttr(b.id)}" aria-labelledby="era-${escapeAttr(b.id)}-h">
+      return `<section class="tl-era" id="era-${escapeAttr(b.id)}" data-era="${escapeAttr(b.id)}" aria-labelledby="era-${escapeAttr(b.id)}-h">
           <header class="tl-era-header">
             <span class="tl-era-marker" aria-hidden="true"></span>
             <div class="tl-era-text">
@@ -141,12 +141,17 @@ export function renderTimelinePage(topics) {
   // Anchor strip — quick jump between era buckets.
   const anchors = ERA_BUCKETS.filter((b) => groups.get(b.id).length > 0)
     .map(
-      (b) => `<a class="tl-anchor" href="#era-${escapeAttr(b.id)}">
-          <span class="tl-anchor-label">${escapeHtml(b.label)}</span>
-          <span class="tl-anchor-meta">${escapeHtml(b.sub)} · ${groups.get(b.id).length}</span>
+      (b) => `<a class="tl-anchor" href="#era-${escapeAttr(b.id)}" data-era="${escapeAttr(b.id)}">
+          <span class="tl-anchor-dot" aria-hidden="true"></span>
+          <span class="tl-anchor-text">
+            <span class="tl-anchor-label">${escapeHtml(b.label)}</span>
+            <span class="tl-anchor-meta">${escapeHtml(b.sub)} · ${groups.get(b.id).length}</span>
+          </span>
         </a>`,
     )
     .join('');
+
+  const firstEraId = ERA_BUCKETS.find((b) => groups.get(b.id).length > 0)?.id || '';
 
   return `
 <header class="index-hero index-hero--tight">
@@ -161,10 +166,16 @@ export function renderTimelinePage(topics) {
   <span class="breadcrumb-sep" aria-hidden="true">›</span>
   <span aria-current="page">Timeline</span>
 </nav>
-<main id="main-content" class="tl-page tl-page--vertical">
+<main id="main-content" class="tl-page tl-page--vertical" data-first-era="${escapeAttr(firstEraId)}">
   <nav class="tl-anchors" aria-label="Jump to era">${anchors}</nav>
   <div class="tl-river">
-    <div class="tl-spine" aria-hidden="true"></div>
+    <div class="tl-spine" aria-hidden="true">
+      <div class="tl-spine-fill" aria-hidden="true"></div>
+    </div>
+    <header class="tl-river-start" aria-hidden="true">
+      <span class="tl-river-start-marker"></span>
+      <span class="tl-river-start-label">Present</span>
+    </header>
     ${sections}
     <footer class="tl-river-end">
       <span class="tl-river-end-marker" aria-hidden="true"></span>
@@ -180,7 +191,7 @@ function renderTimelineItem(t) {
   const thumb = img ? `../assets/images/topics/${t.slug}/${img.src}` : '';
   const place = t.geo?.place ? `<span class="tl-card-place">◉ ${escapeHtml(t.geo.place)}</span>` : '';
   const era = formatEra(t.era);
-  return `<a class="tl-card" href="topics/${escapeAttr(t.slug)}.html"
+  return `<a class="tl-card tl-card--reveal" href="topics/${escapeAttr(t.slug)}.html"
         data-family="${escapeAttr(fam.color)}">
         <div class="tl-card-node" aria-hidden="true"><span class="tl-card-node-dot"></span></div>
         <div class="tl-card-era">

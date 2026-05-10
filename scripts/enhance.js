@@ -81,4 +81,106 @@
       } catch (e) {}
     });
   });
+
+  // Timeline enhancements — spine progress, active anchor, card reveal.
+  const tlPage = document.querySelector('.tl-page--vertical');
+  if (tlPage) {
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Card reveal-on-scroll
+    const cards = tlPage.querySelectorAll('.tl-card--reveal');
+    if ('IntersectionObserver' in window && !reduceMotion) {
+      const cardIO = new IntersectionObserver(
+        (entries) => {
+          for (const e of entries) {
+            if (e.isIntersecting) {
+              e.target.classList.add('is-in');
+              cardIO.unobserve(e.target);
+            }
+          }
+        },
+        { rootMargin: '0px 0px -8% 0px', threshold: 0.05 },
+      );
+      const vh = window.innerHeight || 800;
+      cards.forEach((c) => {
+        const r = c.getBoundingClientRect();
+        if (r.top < vh * 1.05) c.classList.add('is-in');
+        else cardIO.observe(c);
+      });
+    } else {
+      cards.forEach((c) => c.classList.add('is-in'));
+    }
+
+    // Active anchor — highlight the era currently in view
+    const eras = Array.from(tlPage.querySelectorAll('.tl-era[data-era]'));
+    const anchors = new Map(
+      Array.from(tlPage.querySelectorAll('.tl-anchor[data-era]')).map((a) => [
+        a.getAttribute('data-era'),
+        a,
+      ]),
+    );
+    if ('IntersectionObserver' in window && eras.length > 0) {
+      const visible = new Set();
+      const setActive = (id) => {
+        anchors.forEach((a, key) => a.classList.toggle('is-active', key === id));
+      };
+      const eraIO = new IntersectionObserver(
+        (entries) => {
+          for (const e of entries) {
+            const id = e.target.getAttribute('data-era');
+            if (e.isIntersecting) visible.add(id);
+            else visible.delete(id);
+          }
+          // Pick the deepest visible era (largest index in original order)
+          // so the active marker reflects how far the reader has traveled.
+          let bestId = null;
+          let bestIdx = -1;
+          for (const id of visible) {
+            const idx = eras.findIndex((s) => s.getAttribute('data-era') === id);
+            if (idx > bestIdx) {
+              bestIdx = idx;
+              bestId = id;
+            }
+          }
+          if (bestId) setActive(bestId);
+        },
+        {
+          rootMargin: `-${(parseInt(getComputedStyle(document.documentElement).getPropertyValue('--topnav-h')) || 64) + 24}px 0px -55% 0px`,
+          threshold: 0,
+        },
+      );
+      eras.forEach((s) => eraIO.observe(s));
+      const initial = tlPage.getAttribute('data-first-era');
+      if (initial) setActive(initial);
+    }
+
+    // Spine progress — fills as the user scrolls through the river
+    const spineFill = tlPage.querySelector('.tl-spine-fill');
+    const river = tlPage.querySelector('.tl-river');
+    if (spineFill && river && !reduceMotion) {
+      let raf = 0;
+      const update = () => {
+        raf = 0;
+        const rect = river.getBoundingClientRect();
+        const vh = window.innerHeight || 800;
+        const total = rect.height;
+        if (total <= 0) {
+          spineFill.style.setProperty('--tl-progress', '0%');
+          return;
+        }
+        // Progress = how far the viewport midpoint has traveled through the river
+        const mid = vh * 0.5;
+        const traveled = mid - rect.top;
+        const pct = Math.max(0, Math.min(100, (traveled / total) * 100));
+        spineFill.style.setProperty('--tl-progress', pct.toFixed(2) + '%');
+      };
+      const onScroll = () => {
+        if (raf) return;
+        raf = requestAnimationFrame(update);
+      };
+      update();
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onScroll, { passive: true });
+    }
+  }
 })();
