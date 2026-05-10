@@ -89,6 +89,7 @@ jobs:
           [ -f _site/random.html ] && cp _site/random.html .
           [ -f _site/sitemap.xml ] && cp _site/sitemap.xml .
           [ -f _site/feed.xml ] && cp _site/feed.xml .
+          [ -f _site/robots.txt ] && cp _site/robots.txt .
 
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
