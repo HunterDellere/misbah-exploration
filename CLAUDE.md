@@ -105,7 +105,7 @@ When in doubt, prefer **Wikimedia Commons** or **Unsplash** sources — durable 
 
 ## Topic families
 
-The first family tag in `tags:` colors the topic. Families: `tea`, `history`, `travel`, `anthropology`, `science`, `craft`, `experience`, `food`. Anything else falls back to default.
+The first family tag in `tags:` colors the topic. Families: `tea`, `history`, `travel`, `anthropology`, `science`, `craft`, `experience`, `food`, `cartography`, `vietnam`. Anything else falls back to default. The validator's `FAMILIES` set in `build/validate.mjs` is the source of truth — keep this list in sync.
 
 This drives:
 - Pin color on the globe
