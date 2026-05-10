@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './_fixtures.mjs';
 
 test('atlas: side panel renders one list item per geo-tagged topic', async ({ page }) => {
   await page.goto('/pages/atlas.html');

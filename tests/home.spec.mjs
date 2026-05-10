@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './_fixtures.mjs';
 
 test('home renders mosaic with all topics', async ({ page }) => {
   await page.goto('/');

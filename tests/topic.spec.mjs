@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './_fixtures.mjs';
 
 test('topic page: hero, attribution, body, breadcrumbs', async ({ page }) => {
   await page.goto('/pages/topics/gongfu-cha.html');
@@ -15,9 +15,10 @@ test('topic page: pillar nav has prev and next', async ({ page }) => {
   await expect(page.locator('.pillar-nav-next')).toBeVisible();
 });
 
-test('topic page: long essays show TOC', async ({ page }) => {
+test('topic page: long essays show TOC', async ({ page, viewport }) => {
+  // TOC is hidden at <1100px by design (mobile + tablet)
+  test.skip((viewport?.width ?? 0) < 1100, 'TOC is hidden on narrow viewports by design');
   await page.goto('/pages/topics/origins-of-anthropology.html');
-  // TOC only renders at >=1100px width; default desktop test uses 1280
   await expect(page.locator('.toc')).toBeVisible();
   expect(await page.locator('.toc-list a').count()).toBeGreaterThanOrEqual(3);
 });

@@ -13,7 +13,8 @@
     "draft": "node build/draft.mjs",
     "serve": "python3 -m http.server 8080",
     "test": "npm run verify && playwright test",
-    "test:ui": "playwright test --ui"
+    "test:ui": "playwright test --ui",
+    "test:live": "playwright test --config=playwright.live.config.mjs"
   },
   "dependencies": {
     "gray-matter": "^4.0.3",

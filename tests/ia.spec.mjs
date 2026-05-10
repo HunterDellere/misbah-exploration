@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './_fixtures.mjs';
 
 test('pillar hub: anthropology lists 5 children in order', async ({ page }) => {
   await page.goto('/pages/pillars/anthropology.html');
