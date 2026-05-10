@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><title>… — misbah · exploration</title>
+<script>
+fetch('data/topics.json').then(r => r.json()).then(ts => {
+  if (!ts || !ts.length) { location.replace('index.html'); return; }
+  const t = ts[Math.floor(Math.random() * ts.length)];
+  location.replace('pages/topics/' + t.slug + '.html');
+}).catch(() => location.replace('index.html'));
+</script>
+</head><body></body></html>

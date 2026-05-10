@@ -1,0 +1,8 @@
+node_modules/
+local/
+.DS_Store
+pages/
+data/
+og/
+sitemap.xml
+feed.xml

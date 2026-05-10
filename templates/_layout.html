@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<!-- {{{metaComment}}} -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{{pageTitle}}} — misbah · exploration</title>
+<meta name="description" content="{{{metaDesc}}}">
+<meta name="theme-color" content="#f4ecd8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0e1726" media="(prefers-color-scheme: dark)">
+<meta name="color-scheme" content="light dark">
+<script>(function(){try{var t=localStorage.getItem('mis-theme');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}else if(!t&&window.matchMedia('(prefers-color-scheme: dark)').matches){document.documentElement.setAttribute('data-theme','dark');}}catch(e){}})();</script>
+<meta name="apple-mobile-web-app-title" content="misbah">
+<meta name="application-name" content="misbah · exploration">
+<link rel="canonical" href="{{{canonicalUrl}}}">
+{{{ogTags}}}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,300..800,0..100&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,300..800,0..100&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"></noscript>
+<link rel="stylesheet" href="{{{cssRoot}}}style.css?v=1">
+{{{jsonLd}}}
+</head>
+<body data-category="{{{category}}}">
+<a class="skip-link" href="#main-content">Skip to content</a>
+
+<nav class="topnav" aria-label="Site">
+  <a href="{{{cssRoot}}}index.html" class="brand" aria-label="misbah · exploration — home">
+    <span class="brand-mark">M</span><span class="brand-name">misbah</span><span class="brand-sep">·</span><span class="brand-sub">exploration</span>
+  </a>
+  <div class="topnav-right">
+    <a href="{{{cssRoot}}}pages/atlas.html" class="topnav-link">Atlas</a>
+    <a href="{{{cssRoot}}}random.html" class="topnav-link" aria-label="A random topic">↻</a>
+    <button class="theme-toggle" type="button" aria-label="Toggle dark mode" id="theme-toggle">
+      <span class="tt-sun" aria-hidden="true">☀</span>
+      <span class="tt-moon" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</nav>
+
+{{{pageBody}}}
+
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <span class="footer-mark">misbah · exploration</span>
+    <span class="footer-meta">A personal atlas of topics worth a longer look.</span>
+  </div>
+</footer>
+
+<script src="{{{cssRoot}}}scripts/enhance.js?v=1" defer></script>
+</body>
+</html>
