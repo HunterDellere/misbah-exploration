@@ -27,7 +27,7 @@ test('tags page: renders tag cloud and sections', async ({ page }) => {
 
 test('timeline page: renders items', async ({ page }) => {
   await page.goto('/pages/timeline.html');
-  expect(await page.locator('.timeline-item').count()).toBeGreaterThan(10);
+  expect(await page.locator('.tl-item').count()).toBeGreaterThan(10);
 });
 
 test('404 page: renders with topic-suggest actions', async ({ page }) => {

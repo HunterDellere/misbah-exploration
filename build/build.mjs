@@ -282,6 +282,8 @@ function emitData(topics, pillars) {
         pillar: t.pillar || null,
         image: hero ? `assets/images/topics/${t.slug}/${hero.src}` : null,
         url: `pages/topics/${t.slug}.html`,
+        eraStart: t.era?.start ?? null,
+        eraEnd: t.era?.end ?? null,
       };
     });
   writeFileSync(join(ROOT, 'data/geo.json'), JSON.stringify(geo, null, 2));

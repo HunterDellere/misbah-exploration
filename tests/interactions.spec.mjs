@@ -140,7 +140,7 @@ test('tags: clicking a chip scrolls to its section', async ({ page }) => {
 
 test('timeline: items render with positioned bars', async ({ page }) => {
   await page.goto('/pages/timeline.html');
-  const items = page.locator('.timeline-item');
+  const items = page.locator('.tl-item');
   expect(await items.count()).toBeGreaterThan(15);
   const first = items.first();
   const left = await first.evaluate(el => el.style.left);

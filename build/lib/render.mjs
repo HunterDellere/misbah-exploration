@@ -134,6 +134,7 @@ export function renderTopicPage(topic, all) {
   const heroBlock = `
     <header class="topic-hero ${heroVariant}" data-family="${fam.color}">
       ${heroSrc ? renderHeroImg(topic, hero, heroSrc) : ''}
+      ${heroSrc ? '<div class="topic-hero-scrollcue" aria-hidden="true"><span>Read</span></div>' : ''}
       <div class="topic-hero-overlay">
         <div class="topic-hero-overlay-inner">
           <div class="topic-hero-meta">${meta.join('<span aria-hidden="true">·</span>')}</div>
