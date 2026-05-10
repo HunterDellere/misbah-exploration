@@ -15,7 +15,7 @@ export function renderTagsPage(topics) {
   const sections = tags.map(([tag, ts]) => {
     const items = ts.sort((a, b) => a.title.localeCompare(b.title)).map(t => {
       const fam = familyFor(t);
-      return `<a class="tag-result" href="../topics/${escapeAttr(t.slug)}.html">
+      return `<a class="tag-result" href="topics/${escapeAttr(t.slug)}.html">
         <span class="tag-result-title">${escapeHtml(t.title)}</span>
         <span class="tag-result-meta">${escapeHtml(fam.label)}${t.geo?.place ? ` · ${escapeHtml(t.geo.place)}` : ''}</span>
       </a>`;
@@ -83,7 +83,7 @@ export function renderTimelinePage(topics) {
       const pos = ((start - minStart) / span) * 100;
       const width = Math.max(2, ((end - start) / span) * 100);
       const fam = familyFor(t);
-      return `<a class="timeline-item" href="../topics/${escapeAttr(t.slug)}.html"
+      return `<a class="timeline-item" href="topics/${escapeAttr(t.slug)}.html"
         style="left:${pos.toFixed(2)}%; width:${width.toFixed(2)}%"
         data-family="${fam.color}">
         <span class="timeline-item-title">${escapeHtml(t.title)}</span>
