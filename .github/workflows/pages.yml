@@ -12,6 +12,12 @@ permissions:
   pages: write
   id-token: write
 
+env:
+  # Opt actions into Node 24 ahead of the June 2026 forced switch; v4
+  # actions still ship Node 20 binaries by default but support the
+  # override. Removes the deprecation warning from every run.
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 concurrency:
   group: pages
   cancel-in-progress: false
