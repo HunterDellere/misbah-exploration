@@ -913,6 +913,44 @@ main { display: block; }
   color: var(--ink-soft);
 }
 
+/* Lazy-load placeholder shown until globe.gl fetches + mounts. */
+.globe-placeholder {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  gap: var(--s-3);
+  color: var(--ink-faint);
+}
+.globe-placeholder-orb {
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 35% 30%, var(--paper-elev), transparent 60%),
+    radial-gradient(circle at 60% 70%, var(--rule-soft), transparent 55%),
+    radial-gradient(circle at 50% 50%, var(--paper-soft), var(--paper) 80%);
+  box-shadow:
+    inset -16px -10px 36px rgba(14, 23, 38, 0.10),
+    0 8px 24px rgba(14, 23, 38, 0.06);
+  opacity: 0.85;
+}
+.globe-placeholder-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-faint);
+  margin-top: var(--s-2);
+}
+[data-theme="dark"] .globe-placeholder-orb {
+  background:
+    radial-gradient(circle at 35% 30%, #2a3a5a, transparent 60%),
+    radial-gradient(circle at 60% 70%, #1a2a4a, transparent 55%),
+    radial-gradient(circle at 50% 50%, #15243b, #0a1220 80%);
+  box-shadow: inset -16px -10px 36px rgba(0, 0, 0, 0.3);
+}
+
 .atlas-preview {
   position: absolute;
   left: var(--s-4); bottom: var(--s-4);

@@ -20,7 +20,10 @@ test('atlas: tag chip filters list', async ({ page }) => {
 test('atlas: globe stage has either a canvas or svg fallback', async ({ page }) => {
   await page.goto('/pages/atlas.html');
   await page.waitForLoadState('networkidle');
-  await page.waitForTimeout(1500);
-  const inGlobe = await page.locator('#globe canvas, #globe svg').count();
-  expect(inGlobe).toBeGreaterThan(0);
+  // Globe load is deferred past the LCP window (window 'load' + ~1.2s,
+  // or up to a 2.5s hard floor) so the canvas/svg shows up a moment
+  // later than the rest of the page. Poll for it.
+  await expect(page.locator('#globe canvas, #globe svg').first()).toBeAttached({
+    timeout: 8000,
+  });
 });

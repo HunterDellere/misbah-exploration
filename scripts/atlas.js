@@ -193,31 +193,118 @@ async function init() {
     if (e.key === 'Escape') hidePreview();
   });
 
-  if (hasWebGL()) {
-    try {
-      await loadScript('https://cdn.jsdelivr.net/npm/globe.gl@2/dist/globe.gl.min.js');
-      mountGlobe(data);
-      return;
-    } catch (e) {
-      console.warn('globe.gl load failed, falling back to 2D', e);
+  // Defer the heavy globe load until the stage is in view AND the
+  // browser is idle. This keeps the atlas page's LCP/TBT honest — the
+  // list, filters, search, and 2D preview are all immediately usable.
+  scheduleGlobeMount(data);
+}
+
+function renderStagePlaceholder() {
+  if (!stage || stage.dataset.placeholder === 'true') return;
+  stage.dataset.placeholder = 'true';
+  stage.innerHTML =
+    '<div class="globe-placeholder" aria-hidden="true">' +
+    '<div class="globe-placeholder-orb"></div>' +
+    '<div class="globe-placeholder-label">Globe loading on scroll…</div>' +
+    '</div>';
+}
+
+function clearStagePlaceholder() {
+  if (!stage) return;
+  stage.dataset.placeholder = 'false';
+  stage.innerHTML = '';
+}
+
+function scheduleGlobeMount(data) {
+  if (!stage) return;
+  renderStagePlaceholder();
+
+  const supportsWebGL = hasWebGL();
+  let started = false;
+
+  const start = () => {
+    if (started) return;
+    started = true;
+    const finish = async () => {
+      if (supportsWebGL) {
+        try {
+          await loadScript('https://cdn.jsdelivr.net/npm/globe.gl@2/dist/globe.gl.min.js');
+          clearStagePlaceholder();
+          mountGlobe(data);
+          return;
+        } catch (e) {
+          console.warn('globe.gl load failed, falling back to 2D', e);
+        }
+      }
+      clearStagePlaceholder();
+      mount2D(data);
+    };
+    if ('requestIdleCallback' in window) {
+      window.requestIdleCallback(finish, { timeout: 800 });
+    } else {
+      setTimeout(finish, 100);
     }
+  };
+
+  // Hold the heavy load until the page has settled past its LCP window.
+  // Three signals released the brake: window 'load' fires, OR the user
+  // interacts (scroll, click, key, pointer), OR a hard 2.5s floor passes —
+  // whichever first. Then IntersectionObserver + idle callback gate the
+  // actual mount on visibility.
+  let released = false;
+  const release = () => {
+    if (released) return;
+    released = true;
+    cleanup();
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver(
+        (entries) => {
+          for (const e of entries) {
+            if (e.isIntersecting) {
+              io.disconnect();
+              start();
+              break;
+            }
+          }
+        },
+        { rootMargin: '160px' },
+      );
+      io.observe(stage);
+    } else {
+      start();
+    }
+  };
+  const cleanup = () => {
+    window.removeEventListener('scroll', release);
+    window.removeEventListener('pointerdown', release);
+    window.removeEventListener('keydown', release);
+    window.removeEventListener('load', release);
+  };
+  if (document.readyState === 'complete') {
+    setTimeout(release, 2000);
+  } else {
+    window.addEventListener('load', () => setTimeout(release, 1200), { once: true });
   }
-  mount2D(data);
+  window.addEventListener('scroll', release, { passive: true, once: true });
+  window.addEventListener('pointerdown', release, { once: true });
+  window.addEventListener('keydown', release, { once: true });
+  setTimeout(release, 2500);
 }
 
 const renderGlobe = {};
 
 function mountGlobe(data) {
   const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  // Smaller, faster textures: earth-day ~245KB (light), earth-dark ~95KB
+  // (dark). Bump map dropped — its 380KB cost wasn't earning its keep on
+  // a pin-display globe at this scale.
   const tex = isDark
-    ? 'https://unpkg.com/three-globe/example/img/earth-night.jpg'
-    : 'https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg';
-  const bumpTex = 'https://unpkg.com/three-globe/example/img/earth-topology.png';
+    ? 'https://unpkg.com/three-globe/example/img/earth-dark.jpg'
+    : 'https://unpkg.com/three-globe/example/img/earth-day.jpg';
 
   const world = window
     .Globe()(stage)
     .globeImageUrl(tex)
-    .bumpImageUrl(bumpTex)
     .backgroundColor('rgba(0,0,0,0)')
     .atmosphereColor(isDark ? '#6ea9a9' : '#3d6e6e')
     .atmosphereAltitude(0.18)
