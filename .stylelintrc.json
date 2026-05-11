@@ -17,6 +17,10 @@
     "at-rule-empty-line-before": null,
     "value-keyword-case": null,
     "font-family-name-quotes": null,
-    "keyframes-name-pattern": null
+    "keyframes-name-pattern": null,
+    "declaration-block-single-line-max-declarations": null,
+    "custom-property-empty-line-before": null,
+    "property-no-vendor-prefix": null,
+    "selector-not-notation": null
   }
 }

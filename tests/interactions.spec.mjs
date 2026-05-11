@@ -1,7 +1,7 @@
 // interactions.spec.mjs — UX behaviors and small delights
 import { test, expect } from './_fixtures.mjs';
 
-test('search: palette opens with Cmd-K, returns matching results, navigates with Enter', async ({ page, browserName }) => {
+test('search: palette opens with Cmd-K, returns matching results, navigates with Enter', async ({ page }) => {
   await page.goto('/');
   await page.waitForLoadState('networkidle');
   // Use Control on non-Mac runners — Playwright sends both via Meta+ on chromium

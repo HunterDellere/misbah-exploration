@@ -19,11 +19,6 @@ const PALETTES = {
   default:      { a: '#2c3949', b: '#0e1726', c: '#c9a44a' },
 };
 
-function pickFamily(tags) {
-  for (const t of tags) if (PALETTES[t]) return t;
-  return 'default';
-}
-
 export function ensurePlaceholder(rootAssetsDir, slug, family, title) {
   const dir = join(rootAssetsDir, 'images/topics', slug);
   const file = join(dir, 'hero.jpg');
