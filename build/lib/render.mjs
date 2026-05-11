@@ -142,7 +142,14 @@ export function renderTopicPage(topic, all) {
 
   const heroAttrib = hero ? renderHeroAttrib(hero) : '';
   const meta = [];
-  if (topic.geo?.place) meta.push(`<span class="pin">◉ ${escapeHtml(topic.geo.place)}</span>`);
+  if (topic.geo?.place) {
+    // Make the place a deep-link to the atlas, anchored on this topic.
+    // Atlas reads ?slug=… on load and opens the preview + flies the
+    // globe to the matching pin.
+    meta.push(
+      `<a class="pin pin--link" href="../atlas.html?slug=${escapeAttr(topic.slug)}" title="Open ${escapeAttr(topic.geo.place)} on the atlas">◉ ${escapeHtml(topic.geo.place)}</a>`,
+    );
+  }
   if (topic.era) meta.push(escapeHtml(formatEra(topic.era)));
   meta.push(escapeHtml(fam.label));
   if (topic.readingMinutes) meta.push(`<span class="reading-time">${topic.readingMinutes} min read</span>`);

@@ -127,5 +127,5 @@ export function renderAtlasPage(topics) {
 </main>
 
 <script>window.__MISBAH_ATLAS_BASE__ = '';</script>
-<script src="../scripts/atlas.js?v=4" defer></script>`;
+<script src="../scripts/atlas.js?v=5" defer></script>`;
 }
