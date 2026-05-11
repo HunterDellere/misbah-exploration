@@ -240,44 +240,71 @@ function scheduleGlobeMount(data) {
       mount2D(data);
     };
     if ('requestIdleCallback' in window) {
-      window.requestIdleCallback(finish, { timeout: 1500 });
+      window.requestIdleCallback(finish, { timeout: 800 });
     } else {
-      setTimeout(finish, 200);
+      setTimeout(finish, 100);
     }
   };
 
-  if ('IntersectionObserver' in window) {
-    const io = new IntersectionObserver(
-      (entries) => {
-        for (const e of entries) {
-          if (e.isIntersecting) {
-            io.disconnect();
-            start();
-            break;
+  // Hold the heavy load until the page has settled past its LCP window.
+  // Three signals released the brake: window 'load' fires, OR the user
+  // interacts (scroll, click, key, pointer), OR a hard 2.5s floor passes —
+  // whichever first. Then IntersectionObserver + idle callback gate the
+  // actual mount on visibility.
+  let released = false;
+  const release = () => {
+    if (released) return;
+    released = true;
+    cleanup();
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver(
+        (entries) => {
+          for (const e of entries) {
+            if (e.isIntersecting) {
+              io.disconnect();
+              start();
+              break;
+            }
           }
-        }
-      },
-      { rootMargin: '120px' },
-    );
-    io.observe(stage);
+        },
+        { rootMargin: '160px' },
+      );
+      io.observe(stage);
+    } else {
+      start();
+    }
+  };
+  const cleanup = () => {
+    window.removeEventListener('scroll', release);
+    window.removeEventListener('pointerdown', release);
+    window.removeEventListener('keydown', release);
+    window.removeEventListener('load', release);
+  };
+  if (document.readyState === 'complete') {
+    setTimeout(release, 2000);
   } else {
-    start();
+    window.addEventListener('load', () => setTimeout(release, 1200), { once: true });
   }
+  window.addEventListener('scroll', release, { passive: true, once: true });
+  window.addEventListener('pointerdown', release, { once: true });
+  window.addEventListener('keydown', release, { once: true });
+  setTimeout(release, 2500);
 }
 
 const renderGlobe = {};
 
 function mountGlobe(data) {
   const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  // Smaller, faster textures: earth-day ~245KB (light), earth-dark ~95KB
+  // (dark). Bump map dropped — its 380KB cost wasn't earning its keep on
+  // a pin-display globe at this scale.
   const tex = isDark
-    ? 'https://unpkg.com/three-globe/example/img/earth-night.jpg'
-    : 'https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg';
-  const bumpTex = 'https://unpkg.com/three-globe/example/img/earth-topology.png';
+    ? 'https://unpkg.com/three-globe/example/img/earth-dark.jpg'
+    : 'https://unpkg.com/three-globe/example/img/earth-day.jpg';
 
   const world = window
     .Globe()(stage)
     .globeImageUrl(tex)
-    .bumpImageUrl(bumpTex)
     .backgroundColor('rgba(0,0,0,0)')
     .atmosphereColor(isDark ? '#6ea9a9' : '#3d6e6e')
     .atmosphereAltitude(0.18)
