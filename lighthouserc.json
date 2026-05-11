@@ -6,7 +6,7 @@
         "http://localhost/index.html",
         "http://localhost/pages/atlas.html"
       ],
-      "numberOfRuns": 1,
+      "numberOfRuns": 3,
       "settings": {
         "preset": "desktop",
         "chromeFlags": "--no-sandbox"

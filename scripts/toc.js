@@ -4,24 +4,31 @@
   const progressBar = document.querySelector('.reading-progress-bar');
 
   if (tocLinks.length) {
-    const targets = [...tocLinks].map(a => ({
-      link: a,
-      target: document.getElementById(a.dataset.tocTarget),
-    })).filter(x => x.target);
+    const targets = [...tocLinks]
+      .map((a) => ({
+        link: a,
+        target: document.getElementById(a.dataset.tocTarget),
+      }))
+      .filter((x) => x.target);
 
-    const obs = new IntersectionObserver(entries => {
-      // Update active TOC link to topmost intersecting heading
-      let bestY = Infinity, best = null;
-      for (const { link, target } of targets) {
-        const r = target.getBoundingClientRect();
-        if (r.top < 120 && r.top > -window.innerHeight && r.top < bestY) {
-          bestY = r.top; best = link;
+    const obs = new IntersectionObserver(
+      () => {
+        // Update active TOC link to topmost intersecting heading
+        let bestY = Infinity,
+          best = null;
+        for (const { link, target } of targets) {
+          const r = target.getBoundingClientRect();
+          if (r.top < 120 && r.top > -window.innerHeight && r.top < bestY) {
+            bestY = r.top;
+            best = link;
+          }
         }
-      }
-      if (best) {
-        tocLinks.forEach(a => a.classList.toggle('is-active', a === best));
-      }
-    }, { rootMargin: '-100px 0px -65% 0px', threshold: [0, 1] });
+        if (best) {
+          tocLinks.forEach((a) => a.classList.toggle('is-active', a === best));
+        }
+      },
+      { rootMargin: '-100px 0px -65% 0px', threshold: [0, 1] },
+    );
     targets.forEach(({ target }) => obs.observe(target));
 
     // initial

@@ -117,7 +117,7 @@
     if (typeof dialog.showModal === 'function') {
       try {
         dialog.showModal();
-      } catch (e) {
+      } catch {
         dialog.setAttribute('open', '');
       }
     } else {
@@ -131,7 +131,7 @@
     if (typeof dialog.close === 'function') {
       try {
         dialog.close();
-      } catch (e) {
+      } catch {
         dialog.removeAttribute('open');
       }
     } else dialog.removeAttribute('open');

@@ -269,6 +269,12 @@ function emitData(topics, pillars) {
     .filter(t => t.geo?.lat != null && t.geo?.lng != null)
     .map(t => {
       const hero = (t.images || []).find(i => i.role === 'hero') || (t.images || [])[0];
+      // Atlas preview pulls a card-sized image — prefer the smallest
+      // webp variant if one exists.
+      const variants = t.heroVariants || [];
+      const previewImage = variants.length > 0
+        ? `assets/images/topics/${t.slug}/${variants[0].file}`
+        : (hero ? `assets/images/topics/${t.slug}/${hero.src}` : null);
       return {
         slug: t.slug,
         title: t.title,
@@ -280,7 +286,7 @@ function emitData(topics, pillars) {
         tags: t.tags || [],
         family: familyFor(t).key,
         pillar: t.pillar || null,
-        image: hero ? `assets/images/topics/${t.slug}/${hero.src}` : null,
+        image: previewImage,
         url: `pages/topics/${t.slug}.html`,
         eraStart: t.era?.start ?? null,
         eraEnd: t.era?.end ?? null,

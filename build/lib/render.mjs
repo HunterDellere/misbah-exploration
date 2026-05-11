@@ -24,6 +24,22 @@ const PILLAR_LABELS = {
   vietnam: 'Vietnam',
 };
 
+// Pick a thumbnail URL for a topic. Prefers a generated webp variant
+// (much smaller than the raw jpg hero) and accepts a size preference:
+// 'small' → smallest variant (~80–150KB for cards/tiles), 'large' →
+// largest variant (for spotlight). Falls back to the raw image src if
+// no variants exist.
+export function thumbSrc(topic, prefix = '../assets/images/topics', size = 'small') {
+  const img = (topic.images || []).find((i) => i.role === 'hero') || (topic.images || [])[0];
+  if (!img) return '';
+  const variants = topic.heroVariants || [];
+  if (variants.length > 0) {
+    const v = size === 'large' ? variants[variants.length - 1] : variants[0];
+    return `${prefix}/${topic.slug}/${v.file}`;
+  }
+  return `${prefix}/${topic.slug}/${img.src}`;
+}
+
 export function familyFor(topic) {
   // Pillar takes precedence over tag-based family
   if (topic.pillar && TOPIC_FAMILIES[topic.pillar]) {
@@ -228,7 +244,7 @@ function renderHeroImg(topic, hero, heroSrc) {
   const variants = topic.heroVariants || [];
   const alt = escapeAttr(hero.alt || topic.title);
   if (variants.length === 0) {
-    return `<img class="topic-hero-img" src="${escapeAttr(heroSrc)}" alt="${alt}" loading="eager" decoding="async">`;
+    return `<img class="topic-hero-img" src="${escapeAttr(heroSrc)}" alt="${alt}" loading="eager" decoding="async" fetchpriority="high">`;
   }
   const srcset = variants
     .map((v) => `../../assets/images/topics/${topic.slug}/${v.file} ${v.width}w`)
@@ -236,7 +252,7 @@ function renderHeroImg(topic, hero, heroSrc) {
   const fallback = variants[variants.length - 1].file;
   return `<picture>
         <source type="image/webp" srcset="${escapeAttr(srcset)}" sizes="(min-width: 1200px) 1200px, 100vw">
-        <img class="topic-hero-img" src="../../assets/images/topics/${escapeAttr(topic.slug)}/${escapeAttr(fallback)}" alt="${alt}" loading="eager" decoding="async">
+        <img class="topic-hero-img" src="../../assets/images/topics/${escapeAttr(topic.slug)}/${escapeAttr(fallback)}" alt="${alt}" loading="eager" decoding="async" fetchpriority="high">
       </picture>`;
 }
 
@@ -291,8 +307,7 @@ function renderConstellation(related) {
     <h2>Nearby in the atlas</h2>
     <div class="constellation-grid">
       ${related.map(t => {
-        const img = (t.images || []).find(i => i.role === 'hero') || (t.images || [])[0];
-        const src = img ? imagePath(t.slug, img.src) : '';
+        const src = thumbSrc(t, '../../assets/images/topics', 'small');
         const fam = familyFor(t);
         return `<a class="constel-card" href="../topics/${escapeAttr(t.slug)}.html">
           <div class="constel-card-img" ${src ? `style="background-image:url('${escapeAttr(src)}')"` : ''}></div>
@@ -336,8 +351,7 @@ export function renderHomeMosaic(topics, pillars = []) {
   // Pick a place-rich byline for spotlight cards.
   const spotlightCards = spotlight.map((t, idx) => {
     const fam = familyFor(t);
-    const img = (t.images || []).find((i) => i.role === 'hero') || (t.images || [])[0];
-    const src = img ? `assets/images/topics/${t.slug}/${img.src}` : '';
+    const src = thumbSrc(t, 'assets/images/topics', idx === 0 ? 'large' : 'small');
     const place = t.geo?.place ? `<span>◉ ${escapeHtml(t.geo.place)}</span>` : '';
     return `<a class="spot-card spot-card--${idx === 0 ? 'lead' : 'sub'}" href="pages/topics/${escapeAttr(t.slug)}.html"
         style="--spot-bg: url('${escapeAttr(src)}')"
@@ -353,8 +367,7 @@ export function renderHomeMosaic(topics, pillars = []) {
 
   const recentCards = recent.map((t) => {
     const fam = familyFor(t);
-    const img = (t.images || []).find((i) => i.role === 'hero') || (t.images || [])[0];
-    const src = img ? `assets/images/topics/${t.slug}/${img.src}` : '';
+    const src = thumbSrc(t, 'assets/images/topics', 'small');
     return `<a class="recent-card" href="pages/topics/${escapeAttr(t.slug)}.html">
         <div class="recent-card-thumb" style="background-image:url('${escapeAttr(src)}')" aria-hidden="true"></div>
         <div class="recent-card-body">
@@ -366,8 +379,7 @@ export function renderHomeMosaic(topics, pillars = []) {
 
   const tiles = featuredFirst.map((t, idx) => {
     const fam = familyFor(t);
-    const img = (t.images || []).find(i => i.role === 'hero') || (t.images || [])[0];
-    const src = img ? `assets/images/topics/${t.slug}/${img.src}` : '';
+    const src = thumbSrc(t, 'assets/images/topics', 'small');
     const size = pickTileSize(idx);
     const meta = [];
     meta.push(escapeHtml(fam.label));
@@ -477,8 +489,7 @@ export function renderPillarPage(pillar, allTopics, allPillars) {
   const bodyHtml = pillar.body ? marked.parse(pillar.body) : '';
 
   const childCards = children.map((t, i) => {
-    const img = (t.images || []).find(im => im.role === 'hero') || (t.images || [])[0];
-    const src = img ? `../../assets/images/topics/${t.slug}/${img.src}` : '';
+    const src = thumbSrc(t, '../../assets/images/topics', 'small');
     return `<a class="pillar-child" href="../topics/${escapeAttr(t.slug)}.html" style="--child-bg: url('${escapeAttr(src)}')">
       <div class="pillar-child-num" aria-hidden="true">${String(i + 1).padStart(2, '0')}</div>
       <div class="pillar-child-body">

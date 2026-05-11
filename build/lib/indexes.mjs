@@ -1,6 +1,6 @@
 // Tag index, timeline index, search.json
 import { escapeHtml, escapeAttr } from './util.mjs';
-import { familyFor } from './render.mjs';
+import { familyFor, thumbSrc } from './render.mjs';
 
 export function renderTagsPage(topics) {
   const map = new Map();
@@ -116,7 +116,6 @@ export function renderTimelinePage(topics) {
   for (const t of sorted) groups.get(bucketFor(eraEnd(t)).id).push(t);
 
   const minStart = Math.min(...dated.map((t) => Number(t.era.start)));
-  const maxEnd = Math.max(...dated.map(eraEnd));
 
   const sections = ERA_BUCKETS.filter((b) => groups.get(b.id).length > 0)
     .map((b) => {
@@ -187,8 +186,7 @@ export function renderTimelinePage(topics) {
 
 function renderTimelineItem(t) {
   const fam = familyFor(t);
-  const img = (t.images || []).find((i) => i.role === 'hero') || (t.images || [])[0];
-  const thumb = img ? `../assets/images/topics/${t.slug}/${img.src}` : '';
+  const thumb = thumbSrc(t, '../assets/images/topics');
   const place = t.geo?.place ? `<span class="tl-card-place">◉ ${escapeHtml(t.geo.place)}</span>` : '';
   const era = formatEra(t.era);
   return `<a class="tl-card tl-card--reveal" href="topics/${escapeAttr(t.slug)}.html"

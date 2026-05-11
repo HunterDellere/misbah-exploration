@@ -9,7 +9,7 @@
       html.setAttribute('data-theme', next);
       try {
         localStorage.setItem(KEY, next);
-      } catch (e) {}
+      } catch {}
     });
   }
 
@@ -65,7 +65,7 @@
             );
           }
         }
-      } catch (e) {}
+      } catch {}
     });
 
   // Anchor-link copy on heading click
@@ -78,7 +78,7 @@
       target.scrollIntoView({ behavior: 'smooth' });
       try {
         history.replaceState(null, '', id);
-      } catch (e) {}
+      } catch {}
     });
   });
 

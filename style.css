@@ -20,7 +20,6 @@
   --oxblood-deep: #5a1f1c;
   --teal:         #3d6e6e;
   --teal-deep:    #2a4f4f;
-
   --link:         var(--oxblood);
   --link-hover:   var(--brass-deep);
   --focus-ring:   0 0 0 3px rgba(201, 164, 74, 0.45);
@@ -36,7 +35,6 @@
   --topic-food:       #b8623a;
   --topic-vietnam:    #8a3a3a;
   --topic-default:    #2c3949;
-
   --topic-tea-bg:        rgba(61, 110, 110, 0.07);
   --topic-history-bg:    rgba(122, 74, 26, 0.07);
   --topic-travel-bg:     rgba(201, 164, 74, 0.10);
@@ -51,7 +49,6 @@
   --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
   --font-ui:      'Inter Tight', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-mono:    'JetBrains Mono', 'SF Mono', Menlo, monospace;
-
   --t-tiny:    0.6875rem;
   --t-meta:    0.8125rem;
   --t-small:   0.875rem;
@@ -62,11 +59,9 @@
   --t-h2:      1.75rem;
   --t-h1:      2.25rem;
   --t-display: 3.5rem;
-
   --ls-eyebrow: 0.18em;
   --ls-tight:  -0.02em;
   --ls-display: -0.025em;
-
   --s-1: 0.25rem;
   --s-2: 0.5rem;
   --s-3: 0.75rem;
@@ -76,20 +71,16 @@
   --s-7: 3rem;
   --s-8: 4.5rem;
   --s-9: 6rem;
-
   --r-1: 4px;
   --r-2: 8px;
   --r-3: 14px;
   --r-pill: 999px;
-
   --nav-h: 60px;
   --max-w: 1280px;
   --read-w: 680px;
-
   --shadow-sm: 0 1px 2px rgba(14, 23, 38, 0.05), 0 1px 3px rgba(14, 23, 38, 0.07);
   --shadow-md: 0 2px 6px rgba(14, 23, 38, 0.08), 0 6px 18px rgba(14, 23, 38, 0.10);
   --shadow-lg: 0 6px 14px rgba(14, 23, 38, 0.10), 0 18px 44px rgba(14, 23, 38, 0.14);
-
   --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
   --d-fast: 140ms;
   --d-base: 240ms;
@@ -106,7 +97,6 @@
   --ink-warm:   #e6dec7;
   --rule:       #2a3a55;
   --rule-soft:  #1d2a40;
-
   --brass:      #d4b86a;
   --brass-deep: #c9a44a;
   --brass-soft: rgba(212, 184, 106, 0.22);
@@ -114,10 +104,8 @@
   --oxblood-deep: #a04a44;
   --teal:       #6ea9a9;
   --teal-deep:  #4a8484;
-
   --link: var(--brass);
   --link-hover: var(--paper);
-
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3), 0 1px 3px rgba(0, 0, 0, 0.4);
   --shadow-md: 0 2px 6px rgba(0, 0, 0, 0.4), 0 6px 18px rgba(0, 0, 0, 0.5);
   --shadow-lg: 0 6px 14px rgba(0, 0, 0, 0.5), 0 18px 44px rgba(0, 0, 0, 0.6);
@@ -125,7 +113,7 @@
 
 /* ── Reset + base ─────────────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+html { text-size-adjust: 100%; scroll-behavior: smooth; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
@@ -164,7 +152,6 @@ button:focus-visible { outline: none; box-shadow: var(--focus-ring); border-radi
   padding: 0 var(--s-5);
   background: color-mix(in srgb, var(--paper) 88%, transparent);
   backdrop-filter: saturate(140%) blur(10px);
-  -webkit-backdrop-filter: saturate(140%) blur(10px);
   border-bottom: 1px solid var(--rule-soft);
 }
 .brand {
@@ -376,14 +363,14 @@ main { display: block; }
   line-height: 1.7;
   color: var(--ink-warm);
 }
-.topic-body a:not(.constel-card):not(.atlas-list-item) {
+.topic-body a:not(.constel-card, .atlas-list-item) {
   color: var(--ink);
   text-decoration: underline;
   text-decoration-color: var(--brass);
   text-decoration-thickness: 1.5px;
   text-underline-offset: 3px;
 }
-.topic-body a:not(.constel-card):not(.atlas-list-item):hover {
+.topic-body a:not(.constel-card, .atlas-list-item):hover {
   text-decoration-color: var(--oxblood);
   color: var(--oxblood);
 }
@@ -966,7 +953,6 @@ main { display: block; }
   transition: transform var(--d-base) var(--ease-out), opacity var(--d-base) var(--ease-out);
   z-index: 5;
   backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
   max-height: calc(100% - 2 * var(--s-4));
   display: flex; flex-direction: column;
 }
@@ -2496,7 +2482,6 @@ main { display: block; }
 .search-palette::backdrop {
   background: rgba(14, 23, 38, 0.55);
   backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
 }
 .search-form {
   display: flex; align-items: center; gap: var(--s-3);
