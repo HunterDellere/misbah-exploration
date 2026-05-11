@@ -50,6 +50,7 @@ const regions = document.querySelectorAll('.atlas-region');
 
 const activeTags = new Set();
 let activeQuery = '';
+let pendingFlyToSlug = null;
 
 function hasWebGL() {
   try {
@@ -147,6 +148,22 @@ async function init() {
   const data = await fetch('../data/geo.json')
     .then((r) => r.json())
     .catch(() => []);
+
+  // Deep-link: ?slug=X opens the preview for that topic and (when the
+  // globe mounts) flies the camera to its pin. Lets topic pages link
+  // back into the atlas anchored on a specific place.
+  const linkedSlug = new URLSearchParams(location.search).get('slug');
+  const linkedTopic = linkedSlug ? data.find((t) => t.slug === linkedSlug) : null;
+  if (linkedTopic) {
+    showPreview(linkedTopic);
+    pendingFlyToSlug = linkedTopic.slug;
+    // Also highlight the corresponding list row.
+    const row = document.querySelector(`.atlas-list-item[data-slug="${linkedTopic.slug}"]`);
+    if (row) {
+      row.scrollIntoView({ block: 'center', behavior: 'instant' in window ? 'instant' : 'auto' });
+      row.classList.add('is-linked');
+    }
+  }
 
   // Hover/focus preview from list rows.
   listItems.forEach((el) => {
@@ -329,6 +346,17 @@ function mountGlobe(data) {
     })
     .pointsTransitionDuration(400)
     .pointsData(data);
+
+  // If we entered via ?slug=X, fly to that pin once layout has settled.
+  if (pendingFlyToSlug) {
+    const target = data.find((d) => d.slug === pendingFlyToSlug);
+    pendingFlyToSlug = null;
+    if (target) {
+      requestAnimationFrame(() => {
+        world.pointOfView({ lat: target.lat, lng: target.lng, altitude: 1.4 }, 1200);
+      });
+    }
+  }
 
   const resize = () => {
     const w = stage.clientWidth;

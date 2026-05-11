@@ -27,3 +27,21 @@ test('atlas: globe stage has either a canvas or svg fallback', async ({ page }) 
     timeout: 8000,
   });
 });
+
+test('atlas deep link: ?slug=X opens preview + highlights the list row', async ({ page }) => {
+  await page.goto('/pages/atlas.html?slug=mercator-projection');
+  await page.waitForLoadState('networkidle');
+  // Preview opens for the linked topic
+  await expect(page.locator('#atlas-preview')).toHaveAttribute('data-open', 'true');
+  await expect(page.locator('#atlas-preview-title')).toContainText(/Mercator/i);
+  // List row is marked as the linked one
+  await expect(
+    page.locator('.atlas-list-item[data-slug="mercator-projection"]'),
+  ).toHaveClass(/is-linked/);
+});
+
+test('topic page place is a deep link to the atlas', async ({ page }) => {
+  await page.goto('/pages/topics/mercator-projection.html');
+  const pin = page.locator('.topic-hero-meta .pin--link').first();
+  await expect(pin).toHaveAttribute('href', /atlas\.html\?slug=mercator-projection/);
+});
