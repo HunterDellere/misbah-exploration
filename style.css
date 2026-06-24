@@ -284,6 +284,17 @@ main { display: block; }
   color: rgba(246, 239, 220, 0.78);
 }
 .topic-hero-meta .pin { color: var(--brass); }
+.topic-hero-meta .pin--link {
+  text-decoration: none;
+  border-bottom: 1px dotted color-mix(in oklab, var(--brass) 60%, transparent);
+  transition: color 140ms var(--ease-out), border-color 140ms var(--ease-out);
+}
+.topic-hero-meta .pin--link:hover,
+.topic-hero-meta .pin--link:focus-visible {
+  color: var(--paper);
+  border-bottom-color: var(--paper);
+  outline: none;
+}
 .topic-hero-attrib {
   position: absolute; right: var(--s-4); bottom: var(--s-3);
   z-index: 2;
@@ -844,6 +855,11 @@ main { display: block; }
 .atlas-list-item:hover, .atlas-list-item:focus-visible {
   background: var(--paper-elev);
   outline: none;
+}
+.atlas-list-item.is-linked {
+  background: var(--brass-soft);
+  outline: 1px solid var(--brass);
+  outline-offset: -1px;
 }
 .atlas-list-item:hover::after, .atlas-list-item:focus-visible::after {
   opacity: 1;
